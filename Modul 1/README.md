@@ -35,7 +35,8 @@ Pola visibilitas repositori diatur ke dalam dua skema utama:
 Pada praktikum minggu pertama ini, instalasi dilakukan pada sistem operasi Windows 64-bit menggunakan installer resmi Git for Windows versi 2.56.0. Seluruh tahapan konfigurasi disesuaikan dengan alur tangkapan layar praktikum berikut.
 
 #### 1. Persiapan File Installer
-![1. Persiapan File Installer](Modul 1/images/WhatsApp%20Image%202026-10-05%20at%2001.04.05.jpeg)
+![1. Persiapan File Installer]
+<img src="Modul 1/images/WhatsApp%20Image%202026-10-05%20at%2001.04.05.jpeg" width="700">
 
 Langkah pertama diawali dengan mengunduh paket instalasi Git for Windows dari portal resmi git-scm.com. Hasil unduhan berupa berkas executable bernama `Git-2.56.0-64-bit.exe`. Pemasangan dimulai dengan membuka file installer tersebut.
 
