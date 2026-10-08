@@ -63,9 +63,10 @@ sudo apt install htop
 htop
 ```
 
-![Instalasi htop](04-install-htop.png)
+<img width="1353" height="727" alt="image" src="https://github.com/user-attachments/assets/79548431-6246-484c-88a8-1898778f574b" />
 
-![Tampilan htop](05-htop.png)
+
+
 
 #### 4. Menjalankan satu aplikasi dan melihat prosesnya
 
