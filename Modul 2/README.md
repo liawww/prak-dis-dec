@@ -1,4 +1,4 @@
-<img width="1366" height="721" alt="image" src="https://github.com/user-attachments/assets/6b516c13-d3b7-430a-8ce4-73334384b1e8" /># Praktikum Minggu 02
+# Praktikum Minggu 02
 
 Laporan Praktikum Minggu 02
 
