@@ -47,9 +47,11 @@ Untuk melihat proses yang sedang berjalan di Windows, saya membuka **Task Manage
 
 Agar bisa melihat proses di Linux, saya memakai **Windows Subsystem for Linux (WSL)**, yaitu fitur Windows untuk menjalankan Linux langsung di dalam Windows. Setelah WSL terpasang (muncul jendela *Welcome to WSL*), saya menjalankan Ubuntu. Pada pembukaan pertama, Ubuntu membuat akun pengguna: saya mengisi nama pengguna dan password, lalu memilih `y` pada pertanyaan pengumpulan data metrik. Setelah itu terminal Ubuntu siap dipakai.
 
-![Jendela Welcome to WSL](02-welcome-wsl.png)
+<img width="1120" height="681" alt="image" src="https://github.com/user-attachments/assets/8241452b-9fed-40a5-b8f6-b921d03788f1" />
 
-![Pembuatan akun pengguna Ubuntu](03-setup-ubuntu.png)
+
+<img width="664" height="462" alt="image" src="https://github.com/user-attachments/assets/bf645fa4-46c9-467f-9074-8ea8af4e9197" />
+
 
 #### 3. Memasang htop dan menampilkan proses di Linux
 
@@ -73,9 +75,11 @@ Aplikasi yang saya jalankan adalah editor teks **nano** dengan perintah `nano tu
 nano tugas
 ```
 
-![Aplikasi nano dijalankan](06-nano.png)
+<img width="1364" height="728" alt="image" src="https://github.com/user-attachments/assets/7a5fbf71-92e4-4e29-b1eb-890b57528a84" />
 
-![Proses nano terlihat di htop](07-htop-nano.png)
+
+<img width="1363" height="723" alt="image" src="https://github.com/user-attachments/assets/e63e00ba-b9bf-4076-bf5a-079bc11bd13e" />
+
 
 #### 5. Mematikan proses dengan perintah (tanpa keluar dari aplikasi)
 
@@ -87,9 +91,11 @@ Cara pertama lewat `htop`: saya memilih proses nano, menekan **F9 (Kill)**, lalu
 pkill nano
 ```
 
-![Memilih sinyal SIGTERM di htop](08-htop-kill.png)
+<img width="672" height="711" alt="image" src="https://github.com/user-attachments/assets/90968a0d-f235-461e-b9a1-93d19f1d0774" />
 
-![Hasil pkill nano dan pesan SIGTERM](09-pkill-nano.png)
+
+<img width="1334" height="547" alt="image" src="https://github.com/user-attachments/assets/4e710407-bb31-49ae-a11a-c6badbf0da4c" />
+
 
 Untuk **me-restart proses**, caranya adalah mematikan proses seperti di atas lalu menjalankan aplikasinya lagi (misalnya `nano tugasku`) sehingga sistem membuat proses baru dengan PID yang berbeda.
 
