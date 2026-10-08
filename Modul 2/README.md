@@ -32,30 +32,65 @@ GraphQL adalah spesifikasi yang bisa dipakai untuk komunikasi antara *client* (y
 
 ## C. PEMBAHASAN & TAHAPAN PRAKTIK
 
-### PRAKTIK 1 – Proses pada Windows
+### PRAKTIK 1 – Proses pada Windows dan Linux (WSL Ubuntu)
 
-#### 1. Menampilkan proses di komputer
+Pada praktik ini saya melihat proses di dua sistem operasi: Windows (memakai Task Manager) dan Linux (memakai Ubuntu di WSL dan aplikasi `htop`). Dengan begitu saya bisa membandingkan bagaimana proses ditampilkan dan dikelola di masing-masing sistem.
 
-Untuk melihat proses yang sedang berjalan di komputer, saya membuka **Task Manager** dengan menekan tombol `Ctrl + Shift + Esc`. Di tab *Processes* terlihat daftar aplikasi yang sedang dibuka (*Apps*) dan proses yang berjalan di latar belakang (*Background processes*), lengkap dengan penggunaan CPU, memori, disk, dan jaringan masing-masing. Dari sini saya jadi tahu bahwa walaupun saya hanya membuka beberapa aplikasi, sebenarnya ada banyak proses lain yang dijalankan oleh sistem operasi tanpa saya sadari.
+#### 1. Menampilkan proses di komputer (Windows)
 
-![Daftar proses di Task Manager](01-task-manager.png)
+Untuk melihat proses yang sedang berjalan di Windows, saya membuka **Task Manager** (`Ctrl + Shift + Esc`) dan masuk ke tab *Processes*. Di sini terlihat banyak proses yang berjalan, termasuk proses latar belakang seperti *Service Host*, *Console Window Host*, dan *COM Surrogate*, lengkap dengan penggunaan CPU, memori, disk, dan jaringan masing-masing. Saat itu penggunaan CPU 85%, memori 89%, dan disk 98%, yang menunjukkan bahwa sistem operasi sedang mengelola banyak proses sekaligus tanpa saya sadari.
 
-#### 2. Menjalankan satu aplikasi dan melihat prosesnya
+![Daftar proses di Task Manager Windows](01-task-manager.jpg)
 
-Saya menjalankan satu aplikasi, yaitu **Notepad**, lalu kembali ke Task Manager untuk mencari prosesnya. Setelah Notepad dibuka, muncul entri baru bernama Notepad di daftar *Apps*, lengkap dengan penggunaan CPU dan memorinya. Ini menunjukkan bahwa setiap aplikasi yang dijalankan akan menjadi proses yang dikelola oleh sistem operasi, sesuai dengan teori di modul.
+#### 2. Menyiapkan Linux dengan WSL dan Ubuntu
 
-![Proses Notepad di Task Manager](02-proses-notepad.png)
+Agar bisa melihat proses di Linux, saya memakai **Windows Subsystem for Linux (WSL)**, yaitu fitur Windows untuk menjalankan Linux langsung di dalam Windows. Setelah WSL terpasang (muncul jendela *Welcome to WSL*), saya menjalankan Ubuntu. Pada pembukaan pertama, Ubuntu membuat akun pengguna: saya mengisi nama pengguna dan password, lalu memilih `y` pada pertanyaan pengumpulan data metrik. Setelah itu terminal Ubuntu siap dipakai.
 
-#### 3. Mematikan proses lewat perintah (bukan tombol close)
+![Jendela Welcome to WSL](02-welcome-wsl.png)
 
-Untuk mematikan proses tanpa memakai tombol *close* atau perintah keluar dari aplikasi, saya memakai perintah di Command Prompt. Pertama saya cek dulu proses Notepad dengan `tasklist | findstr notepad`, lalu mematikannya dengan `taskkill /IM notepad.exe /F`. Setelah perintah dijalankan, jendela Notepad langsung tertutup dan prosesnya hilang dari Task Manager. Cara lain yang hasilnya sama adalah klik kanan proses di Task Manager lalu memilih *End task*. Untuk me-*restart* proses, caranya adalah mematikan prosesnya terlebih dahulu, kemudian menjalankan aplikasinya kembali sehingga muncul proses baru.
+![Pembuatan akun pengguna Ubuntu](03-setup-ubuntu.png)
+
+#### 3. Memasang htop dan menampilkan proses di Linux
+
+Di terminal Ubuntu, saya menjalankan `htop` tetapi muncul pesan bahwa perintah belum terpasang. Maka saya memasangnya dengan `sudo apt install htop`, lalu menjalankan `htop` lagi. Tampilan `htop` memperlihatkan daftar proses lengkap dengan PID, pengguna (*USER*), penggunaan CPU dan memori, serta perintah yang dijalankan. Di bagian atas terlihat penggunaan tiap core CPU, memori (sekitar 325 MB dari 1,81 GB), dan jumlah proses (*Tasks*). Proses pertama bernama `/sbin/init` dengan PID 1, yaitu proses induk yang menjalankan proses-proses lainnya.
 
 ```
-tasklist | findstr notepad
-taskkill /IM notepad.exe /F
+htop
+sudo apt install htop
+htop
 ```
 
-![Mematikan proses dengan taskkill](03-kill-proses.png)
+![Instalasi htop](04-install-htop.png)
+
+![Tampilan htop](05-htop.png)
+
+#### 4. Menjalankan satu aplikasi dan melihat prosesnya
+
+Aplikasi yang saya jalankan adalah editor teks **nano** dengan perintah `nano tugas`. Setelah nano terbuka di satu jendela terminal, saya membuka jendela terminal Ubuntu kedua dan menjalankan `htop`. Di daftar proses `htop` muncul baris baru dengan perintah `nano tugas` (PID 961). Ini membuktikan bahwa setiap aplikasi yang dijalankan akan menjadi proses yang dikelola oleh sistem operasi.
+
+```
+nano tugas
+```
+
+![Aplikasi nano dijalankan](06-nano.png)
+
+![Proses nano terlihat di htop](07-htop-nano.png)
+
+#### 5. Mematikan proses dengan perintah (tanpa keluar dari aplikasi)
+
+Proses nano tadi saya matikan dari luar aplikasinya, bukan dengan menekan `Ctrl + X`. Ada dua cara yang saya coba.
+
+Cara pertama lewat `htop`: saya memilih proses nano, menekan **F9 (Kill)**, lalu memilih sinyal **SIGTERM** (sinyal 15, yaitu permintaan agar proses berhenti secara baik-baik) dan menekan Enter. Cara kedua lewat terminal dengan perintah `pkill nano`, yang mematikan proses berdasarkan namanya. Setelah itu, di jendela nano muncul pesan `Received SIGHUP or SIGTERM` dan aplikasinya langsung tertutup, artinya prosesnya berhasil dimatikan oleh sistem operasi.
+
+```
+pkill nano
+```
+
+![Memilih sinyal SIGTERM di htop](08-htop-kill.png)
+
+![Hasil pkill nano dan pesan SIGTERM](09-pkill-nano.png)
+
+Untuk **me-restart proses**, caranya adalah mematikan proses seperti di atas lalu menjalankan aplikasinya lagi (misalnya `nano tugasku`) sehingga sistem membuat proses baru dengan PID yang berbeda.
 
 ### PRAKTIK 2 – GraphQL Server dengan Strawberry
 
