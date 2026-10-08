@@ -1,4 +1,4 @@
-# Praktikum Minggu 02
+<img width="1366" height="721" alt="image" src="https://github.com/user-attachments/assets/6b516c13-d3b7-430a-8ce4-73334384b1e8" /># Praktikum Minggu 02
 
 Laporan Praktikum Minggu 02
 
@@ -40,7 +40,8 @@ Pada praktik ini saya melihat proses di dua sistem operasi: Windows (memakai Tas
 
 Untuk melihat proses yang sedang berjalan di Windows, saya membuka **Task Manager** (`Ctrl + Shift + Esc`) dan masuk ke tab *Processes*. Di sini terlihat banyak proses yang berjalan, termasuk proses latar belakang seperti *Service Host*, *Console Window Host*, dan *COM Surrogate*, lengkap dengan penggunaan CPU, memori, disk, dan jaringan masing-masing. Saat itu penggunaan CPU 85%, memori 89%, dan disk 98%, yang menunjukkan bahwa sistem operasi sedang mengelola banyak proses sekaligus tanpa saya sadari.
 
-![Daftar proses di Task Manager Windows](01-task-manager.jpg)
+<img width="1366" height="721" alt="image" src="https://github.com/user-attachments/assets/950bdd42-3878-4c53-bdbc-281804a2ce4b" />
+
 
 #### 2. Menyiapkan Linux dengan WSL dan Ubuntu
 
