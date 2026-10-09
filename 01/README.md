@@ -41,12 +41,14 @@ Pada praktikum minggu pertama ini, instalasi dilakukan pada sistem operasi Windo
 Langkah pertama diawali dengan mengunduh paket instalasi Git for Windows dari portal resmi git-scm.com. Hasil unduhan berupa berkas executable bernama `Git-2.56.0-64-bit.exe`. Pemasangan dimulai dengan membuka file installer tersebut.
 
 #### 2. Persetujuan Lisensi (GNU General Public License)
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.04.34.jpeg" width="700">
+<img width="598" height="461" alt="WhatsApp Image 2026-10-05 at 01 04 34" src="https://github.com/user-attachments/assets/51ea47ce-679b-44d5-bff0-c1aac8c29d6f" />
+
 
 Jendela pertama menampilkan dokumen lisensi GNU General Public License versi 2 (Juni 1991). Bagian ini menerangkan aspek keterbukaan lisensi perangkat lunak Git sebelum pengguna melanjutkan ke langkah penentuan direktori berkas. Untuk melanjutkan, tombol **Next** ditekan.
 
 #### 3. Pemilihan Direktori Instalasi (Destination Location)
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.04.55.jpeg" width="700">
+<img width="595" height="460" alt="WhatsApp Image 2026-10-05 at 01 04 55" src="https://github.com/user-attachments/assets/d4bb7688-ebbf-4e28-93cb-8293d50e7796" />
+
 
 Lokasi pemasangan berkas program diarahkan ke direktori standar bawaan Windows, yaitu `C:\Program Files\Git`. Instalasi ini membutuhkan alokasi ruang penyimpanan minimal sekitar 341,5 MB pada partisi sistem. Setelah memastikan jalur folder sudah tepat, proses dilanjutkan dengan menekan **Next**.
 
