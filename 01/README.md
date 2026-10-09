@@ -54,7 +54,8 @@ Jendela pertama menampilkan dokumen lisensi GNU General Public License versi 2 (
 Lokasi pemasangan berkas program diarahkan ke direktori standar bawaan Windows, yaitu `C:\Program Files\Git`. Instalasi ini membutuhkan alokasi ruang penyimpanan minimal sekitar 341,5 MB pada partisi sistem. Setelah memastikan jalur folder sudah tepat, proses dilanjutkan dengan menekan **Next**.
 
 #### 4. Pemilihan Komponen (Select Components)
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.05.07.jpeg" width="700">
+<img width="591" height="463" alt="WhatsApp Image 2026-10-05 at 01 05 07" src="https://github.com/user-attachments/assets/0b8d7d1d-b734-406d-821c-9fd4fc44c975" />
+
 
 Pada menu opsi komponen fungsional yang akan dipasang ke sistem operasi, beberapa konfigurasi utama dicentang:
 
@@ -66,22 +67,26 @@ Pada menu opsi komponen fungsional yang akan dipasang ke sistem operasi, beberap
 Setelah verifikasi komponen selesai, klik **Next**.
 
 #### 5. Pembuatan Folder Start Menu
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.05.21.jpeg" width="700">
+<img width="594" height="468" alt="WhatsApp Image 2026-10-05 at 01 05 21" src="https://github.com/user-attachments/assets/3826ca38-88f7-44ef-9216-479df5ffaf22" />
+
 
 Tahap ini menentukan letak pintasan program pada Start Menu Windows. Konfigurasi dibiarkan menggunakan nama default `Git` tanpa mencentang opsi penonaktifan folder, kemudian klik **Next**.
 
 #### 6. Penentuan Teks Editor Default (Default Editor)
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.05.47.jpeg" width="700">
+<img width="596" height="465" alt="WhatsApp Image 2026-10-05 at 01 05 47" src="https://github.com/user-attachments/assets/69a5460e-9e97-40f6-8cd3-71b9c2b1f909" />
+
 
 Git memerlukan text editor eksternal untuk menangani pengisian pesan commit interaktif maupun resolusi konflik berkas secara manual. Pada menu drop-down, opsi yang dipilih adalah **Use Visual Studio Code as Git's default editor**. Pilihan ini diambil karena VS Code merupakan editor utama yang ringan, mudah digunakan untuk membaca kode program, dan memiliki tampilan visual pembanding baris kode (diff tool) yang nyaman bagi mahasiswa Informatika. Setelah memilih VS Code, klik **Next**.
 
 #### 7. Penamaan Cabang Awal Repositori (Initial Branch Name)
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.06.16.jpeg" width="700">
+<img width="592" height="463" alt="WhatsApp Image 2026-10-05 at 01 06 16" src="https://github.com/user-attachments/assets/35155aa0-7adc-425d-8ad1-be61532fd705" />
+
 
 Pada pengaturan nama branch default saat perintah `git init` pertama kali dijalankan, dipilih opsi **Override the default branch name for new repositories** dengan memasukkan nama `main` ke dalam kolom teks. Langkah ini dilakukan agar repositori lokal selaras dengan konvensi repositori modern di GitHub yang sudah menjadikan `main` sebagai cabang standar pengganti penamaan lama `master`. Klik **Next** untuk beralih ke tahapan selanjutnya.
 
 #### 8. Penyesuaian Environment PATH
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.06.29.jpeg" width="700">
+<img width="594" height="463" alt="WhatsApp Image 2026-10-05 at 01 06 29" src="https://github.com/user-attachments/assets/5a6f762d-14b1-4f92-8216-85f2efa7dca9" />
+
 
 Bagian ini mengatur integrasi perintah Git ke dalam variabel environment sistem operasi Windows. Opsi yang dipilih adalah:
 
@@ -90,7 +95,8 @@ Bagian ini mengatur integrasi perintah Git ke dalam variabel environment sistem 
 Pilihan yang direkomendasikan ini menyuntikkan perintah `git` ke dalam system path secara fleksibel, sehingga Git dapat dipanggil tidak hanya melalui terminal Git Bash, melainkan juga lewat Command Prompt (CMD), Windows PowerShell, maupun terminal internal yang terpasang di dalam Visual Studio Code. Klik **Next**.
 
 #### 9. Pemilihan Pustaka Transport HTTPS
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.07.46.jpeg" width="700">
+<img width="595" height="466" alt="WhatsApp Image 2026-10-05 at 01 07 46" src="https://github.com/user-attachments/assets/4fb7165c-8345-481e-b52b-8e556d576dee" />
+
 
 Untuk mengamankan transmisi data repositori saat berkomunikasi dengan server remote via jalur protokol HTTPS, pada tangkapan layar ini dipilih opsi:
 
@@ -99,7 +105,8 @@ Untuk mengamankan transmisi data repositori saat berkomunikasi dengan server rem
 Konfigurasi ini menginstruksikan Git untuk memvalidasi sertifikat SSL/TLS menggunakan penyimpanan sertifikat bawaan Windows (Windows Certificate Stores), yang sangat berguna saat komputer terhubung dengan jaringan institusi atau kampus yang menerapkan filter sertifikat khusus. Klik **Next**.
 
 #### 10. Konfigurasi Penanganan Baris Akhir Teks (Line Ending Conversions)
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.08.05.jpeg" width="700">
+<img width="590" height="457" alt="WhatsApp Image 2026-10-05 at 01 08 05" src="https://github.com/user-attachments/assets/a7e69015-60dd-4052-86ee-37d052fb83d9" />
+
 
 Perbedaan format akhir baris (line ending) antara sistem Windows (CRLF) dan Unix/Linux (LF) dapat memicu konflik semu pada histori kode sumber. Pada opsi ini dipilih konfigurasi rekomendasi pertama:
 
@@ -108,7 +115,8 @@ Perbedaan format akhir baris (line ending) antara sistem Windows (CRLF) dan Unix
 Artinya, Git akan secara otomatis mengonversi karakter LF menjadi CRLF saat berkas di-checkout ke direktori kerja Windows, dan mengembalikannya ke format LF murni saat perubahan disimpan kembali (commit) ke repositori. Parameter internal `core.autocrlf` disetel pada nilai `true`. Klik **Next**.
 
 #### 11. Pemilihan Terminal Emulator untuk Git Bash
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.08.21.jpeg" width="700">
+<img width="594" height="465" alt="WhatsApp Image 2026-10-05 at 01 08 21" src="https://github.com/user-attachments/assets/be2376c7-acf3-46c1-8e37-daf40b51d0dd" />
+
 
 Pada tahap penentuan antarmuka terminal pembaca konsol, dipilih opsi:
 
@@ -117,7 +125,8 @@ Pada tahap penentuan antarmuka terminal pembaca konsol, dipilih opsi:
 MinTTY menyediakan jendela terminal yang fleksibel, mendukung pengaturan ukuran layar dinamis, seleksi blok teks non-persegi panjang, serta penanganan karakter font Unicode yang stabil untuk kebutuhan eksekusi instruksi berbasis Unix di lingkungan Windows. Klik **Next**.
 
 #### 12. Penentuan Perilaku Default Perintah `git pull`
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.08.32.jpeg" width="700">
+<img width="598" height="462" alt="WhatsApp Image 2026-10-05 at 01 08 32" src="https://github.com/user-attachments/assets/4fa9d139-78ad-4777-a180-5926dabe0046" />
+
 
 Ketika pengembang menarik pembaruan data dari repositori remote ke repositori lokal melalui perintah `git pull`, sistem perlu mengetahui strategi penggabungan berkas yang hendak diterapkan. Pada langkah ini dipilih opsi bawaan:
 
@@ -126,7 +135,8 @@ Ketika pengembang menarik pembaruan data dari repositori remote ke repositori lo
 Dengan opsi ini, Git akan membuat sebuah *merge commit* ketika menggabungkan cabang-cabang yang memiliki percabangan terpisah, sehingga integritas riwayat pekerjaan paralel tetap utuh tercatat pada log repositori. Klik **Next**.
 
 #### 13. Pemilihan Credential Helper
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.09.01.jpeg" width="700">
+<img width="597" height="465" alt="WhatsApp Image 2026-10-05 at 01 09 01" src="https://github.com/user-attachments/assets/d80bd75b-0d08-4ca7-8214-890075d9f511" />
+
 
 Untuk memudahkan proses autentikasi akun GitHub tanpa harus berulang kali menginput nama pengguna dan token rahasia pada terminal, dipilih:
 
@@ -135,7 +145,8 @@ Untuk memudahkan proses autentikasi akun GitHub tanpa harus berulang kali mengin
 Aplikasi pembantu lintas platform ini akan mengamankan penyimpanan sesi login ke dalam sistem kredensial Windows secara terenkripsi. Klik **Next**.
 
 #### 14. Konfigurasi Opsi Ekstra (Extra Options)
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.09.15.jpeg" width="700">
+<img width="598" height="461" alt="WhatsApp Image 2026-10-05 at 01 09 15" src="https://github.com/user-attachments/assets/ef48be38-ce8c-4510-aeea-2933d28802a2" />
+
 
 Pada jendela fitur tambahan kinerja, dicentang opsi:
 
@@ -144,12 +155,14 @@ Pada jendela fitur tambahan kinerja, dicentang opsi:
 Opsi `core.fscache = true` ini mempercepat pembacaan status berkas dan direktori proyek berukuran besar ke dalam memori kerja (RAM cache), sehingga respons perintah pelacakan seperti `git status` menjadi jauh lebih gesit. Opsi *symbolic links* dibiarkan nonaktif. Tombol **Install** kemudian ditekan untuk memulai eksekusi penulisan berkas sistem.
 
 #### 15. Proses Pemasangan Berkas (Extracting Files)
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.09.29.jpeg" width="700">
+<img width="596" height="463" alt="WhatsApp Image 2026-10-05 at 01 09 29" src="https://github.com/user-attachments/assets/3d74d4d5-944b-4fbf-ac2d-f4eb9d688e84" />
+
 
 Program installer mulai mengekstrak seluruh pustaka, binari utilitas Git, serta dependensi pendukung seperti `git-lfs.exe` ke direktori tujuan yang telah ditentukan. Bilah kemajuan (progress bar) ditunggu hingga seluruh proses selesai sempurna.
 
 #### 16. Penyelesaian Instalasi
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.10.47.jpeg" width="700">
+<img width="597" height="462" alt="WhatsApp Image 2026-10-05 at 01 10 47" src="https://github.com/user-attachments/assets/c4c72dbc-0ac2-4850-a9aa-1fe25828472f" />
+
 
 Setelah proses transfer data berakhir, jendela *Completing the Git Setup Wizard* muncul menandakan Git telah sukses terpasang pada komputer. Opsi centang *View Release Notes* dibiarkan aktif bila ingin membaca catatan perubahan versi, lalu tombol **Finish** ditekan untuk menutup jendela instalasi secara tuntas.
 
