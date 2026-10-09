@@ -167,7 +167,8 @@ Program installer mulai mengekstrak seluruh pustaka, binari utilitas Git, serta 
 Setelah proses transfer data berakhir, jendela *Completing the Git Setup Wizard* muncul menandakan Git telah sukses terpasang pada komputer. Opsi centang *View Release Notes* dibiarkan aktif bila ingin membaca catatan perubahan versi, lalu tombol **Finish** ditekan untuk menutup jendela instalasi secara tuntas.
 
 #### 17. Uji Verifikasi Pemanggilan Git pada Command Prompt
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.17.06.jpeg" width="700">
+
+
 
 Setelah proses instalasi selesai, tahap pengujian dilakukan guna memastikan berkas binari Git telah terdaftar dengan benar di dalam *environment variable* sistem operasi Windows dan dapat diakses secara global. Jendela terminal Command Prompt (CMD) dibuka, kemudian dieksekusi instruksi:
 
@@ -188,7 +189,9 @@ Ketika perintah `git` dijalankan tanpa argumen tambahan, konsol langsung merespo
 Respons ini membuktikan bahwa konfigurasi penyesuaian PATH (*Git from the command line and also from 3rd-party software*) berhasil diimplementasikan, sehingga terminal mengenali perintah `git` tanpa memicu pesan galat *command not recognized*.
 
 #### 18. Pemeriksaan Versi Git Terpasang (`git --version`)
-<img src="WhatsApp%20Image%202026-10-05%20at%2001.17.29.jpeg" width="700">
+<img width="253" height="55" alt="image" src="https://github.com/user-attachments/assets/e8869272-f662-4f96-8ea5-75d137908ccd" />
+
+
 
 Untuk mengonfirmasi nomor rilis paket perangkat lunak Git yang aktif dan terpasang pada komputer lokal, dijalankan perintah spesifik berikut pada terminal CMD:
 
@@ -199,7 +202,8 @@ git --version
 Output ini memvalidasi bahwa sistem telah berhasil memasang **Git for Windows versi 2.56.0** (arsitektur 64-bit) sesuai dengan berkas installer yang diunduh sebelumnya. Dengan munculnya informasi versi tersebut, lingkungan pengembangan lokal dinyatakan siap digunakan untuk konfigurasi identitas global (`git config`) serta pengerjaan repositori tugas praktikum selanjutnya.
 
 #### 19. Konfigurasi Identitas Pengguna (`git config --global user.name`)
-<img src="WhatsApp%20Image%202026-10-06%20at%2014.07.38.jpeg" width="700">
+<img width="437" height="21" alt="image" src="https://github.com/user-attachments/assets/658c83ed-3269-47f1-ba2e-397724a417fb" />
+
 
 Sebelum melakukan commit pertama, identitas pengembang perlu didaftarkan ke Git. Nama pengguna diatur secara global pada terminal CMD dengan perintah:
 
