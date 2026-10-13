@@ -322,7 +322,8 @@ Terminal menampilkan bahwa server aktif pada alamat `http://0.0.0.0:8000/graphql
 
 #### 7. Mengakses GraphiQL melalui Browser
 
-![Tampilan GraphiQL](16-graphiql.png)
+<img width="943" height="391" alt="15-graphql-server" src="https://github.com/user-attachments/assets/aec6c3d2-42bb-4973-8186-a431125cba64" />
+
 
 Browser dibuka, kemudian diakses alamat `http://localhost:8000/graphql`. Muncul antarmuka **GraphiQL** yang terbagi menjadi dua bagian, yaitu sisi kiri untuk menuliskan query dan sisi kanan untuk menampilkan hasil query. Tombol *run* (segitiga merah muda) digunakan untuk menjalankan query.
 
