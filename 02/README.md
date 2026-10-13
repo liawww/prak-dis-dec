@@ -98,17 +98,20 @@ Task Manager dibuka dengan kombinasi tombol `Ctrl + Shift + Esc`, kemudian dipil
 #### 2. Menyiapkan Linux dengan WSL dan Ubuntu
 
 <img width="648" height="119" alt="02-wsl-welcome" src="https://github.com/user-attachments/assets/f48ac690-7a2f-475c-932f-2dc40704b734" />
-(02-wsl-welcome.png)
 
-![Akun Ubuntu](03-ubuntu-akun.png)
+
+<img width="664" height="462" alt="03-ubuntu-akun" src="https://github.com/user-attachments/assets/03acce07-dc7e-40a8-8299-63e4b1f512e8" />
+
 
 Agar proses pada Linux dapat diamati, digunakan WSL. Setelah WSL terpasang dan jendela *Welcome to WSL* muncul, Ubuntu dijalankan. Pada pembukaan pertama, Ubuntu meminta pembuatan akun pengguna sehingga diisi nama pengguna dan password, kemudian dipilih `y` pada pertanyaan pengumpulan data metrik. Setelah tahap ini selesai, terminal Ubuntu siap digunakan.
 
 #### 3. Memasang `htop` dan Menampilkan Proses pada Linux
 
-![Instalasi htop](04-htop-install.png)
+<img width="1366" height="724" alt="04-htop-install" src="https://github.com/user-attachments/assets/7d7cb9c6-ada8-43e8-b76b-76c18dc53c0f" />
 
-![Tampilan htop](05-htop-proses.png)
+
+<img width="1366" height="729" alt="05-htop-proses" src="https://github.com/user-attachments/assets/1d7d305b-9c52-48a3-954b-5521041a98ce" />
+
 
 Pada terminal Ubuntu dijalankan perintah `htop`, namun muncul pesan bahwa perintah tersebut belum terpasang. Oleh karena itu, daftar paket diperbarui dan `htop` dipasang, lalu dijalankan kembali:
 
@@ -127,9 +130,11 @@ htop
 
 #### 4. Menjalankan Aplikasi dan Melihat Proses yang Dimunculkan
 
-![Nano berjalan](06-nano-jalan.png)
+<img width="1364" height="728" alt="06-nano-jalan" src="https://github.com/user-attachments/assets/2b26f018-a89c-4771-b698-5aca0c7fe8ea" />
 
-![Proses nano pada htop](07-nano-di-htop.png)
+
+<img width="1363" height="723" alt="07-nano-di-htop" src="https://github.com/user-attachments/assets/d49919b8-ea03-420c-a526-5106386ef46f" />
+
 
 Aplikasi yang dijalankan adalah editor teks **nano** dengan membuka berkas bernama `tugas`:
 
@@ -146,9 +151,11 @@ Setelah nano terbuka pada satu jendela terminal, dibuka jendela terminal Ubuntu 
 
 #### 5. Mematikan Proses Melalui Perintah (tanpa Keluar dari Aplikasi)
 
-![Kill melalui htop](08-kill-htop-f9.png)
+<img width="672" height="711" alt="08-kill-htop-f9" src="https://github.com/user-attachments/assets/1ba01101-1620-49cb-abf6-fda1baaca7e3" />
 
-![pkill nano](09-pkill-nano.png)
+
+<img width="1365" height="727" alt="09-pkill-nano" src="https://github.com/user-attachments/assets/376f8d83-9763-403d-8d2c-c5a97a2b2308" />
+
 
 Proses nano dimatikan dari luar aplikasi, bukan dengan perintah keluar bawaan nano (`Ctrl + X`). Terdapat dua cara yang dicoba:
 
@@ -170,7 +177,8 @@ Padanan lain yang dapat digunakan adalah mematikan berdasarkan PID, yaitu `kill 
 
 #### 6. Me-*restart* Proses
 
-![Restart nano](10-restart-nano.png)
+<img width="875" height="74" alt="10-restart-nano" src="https://github.com/user-attachments/assets/4818f796-d642-4509-86e8-d75cc3f5318d" />
+
 
 Pada Linux tidak terdapat satu perintah khusus untuk me-*restart* proses aplikasi biasa. Restart dilakukan dengan mematikan proses terlebih dahulu, kemudian menjalankannya kembali:
 
@@ -199,7 +207,8 @@ Secara berurutan, pekerjaan pada Praktik 1 adalah menampilkan proses pada Window
 
 #### 1. Mempelajari dan Memasang `uv`
 
-![Versi uv](11-uv-version.png)
+<img width="1360" height="728" alt="11-install-strawberry" src="https://github.com/user-attachments/assets/3c08da0c-c77b-443e-9d81-5bbbb5a7a70e" />
+
 
 Langkah pertama adalah mempelajari penggunaan `uv` berdasarkan catatan pada repositori NEO-X-School yang disebutkan di modul. Apabila `uv` belum tersedia, pemasangan dilakukan melalui `winget`, kemudian dilakukan pengecekan versi untuk memastikan `uv` terpasang dengan benar:
 
@@ -210,7 +219,8 @@ uv --version
 
 #### 2. Membuat Workspace dan Menentukan Versi Python
 
-![Membuat workspace](12-workspace.png)
+<img width="1366" height="717" alt="12-server-strawberry" src="https://github.com/user-attachments/assets/64e8a96b-446a-4380-97a7-f8f423a6ced9" />
+
 
 Workspace dengan nama `workspace-01` dibuat sebagai folder kerja agar pekerjaan praktikum tertata dan terpisah dari proyek lain. Pada workspace tersebut digunakan Python versi 3.14 sesuai petunjuk modul. `uv` akan mengunduh Python tersebut apabila belum tersedia pada komputer.
 
@@ -224,7 +234,8 @@ Opsi `--python 3.14` menetapkan versi Python proyek sehingga pemilihan versi tid
 
 #### 3. Membuat dan Mengaktifkan Environment
 
-![Environment aktif](13-environment.png)
+<img width="1366" height="722" alt="13-graphql-query" src="https://github.com/user-attachments/assets/0702ee61-4dec-4e7e-9e05-192125a8069c" />
+
 
 *Virtual environment* dibuat agar paket yang dipasang untuk praktikum ini tidak bercampur dengan paket lain di komputer, lalu diaktifkan:
 
@@ -239,7 +250,8 @@ Setelah environment aktif, awal baris terminal diberi tambahan nama environment 
 
 #### 4. Instalasi Paket yang Diperlukan
 
-![Instalasi Strawberry](14-install-strawberry.png)
+<img width="392" height="221" alt="dqyykmau vf3" src="https://github.com/user-attachments/assets/441d3cbf-ea28-442a-be32-e7a87763f104" />
+
 
 Paket Strawberry GraphQL beserta fitur CLI-nya dipasang ke dalam environment dengan perintah berikut (pada Windows digunakan tanda petik ganda):
 
