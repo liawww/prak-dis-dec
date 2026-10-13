@@ -250,7 +250,7 @@ Setelah environment aktif, awal baris terminal diberi tambahan nama environment 
 
 #### 4. Instalasi Paket yang Diperlukan
 
-<img width="392" height="221" alt="dqyykmau vf3" src="https://github.com/user-attachments/assets/441d3cbf-ea28-442a-be32-e7a87763f104" />
+14
 
 
 Paket Strawberry GraphQL beserta fitur CLI-nya dipasang ke dalam environment dengan perintah berikut (pada Windows digunakan tanda petik ganda):
