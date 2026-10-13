@@ -80,9 +80,10 @@ Beberapa karakteristik penting GraphQL:
 Pada praktik pertama, proses diamati pada dua sistem operasi, yaitu Windows menggunakan Task Manager dan Linux (Ubuntu pada WSL) menggunakan `htop`. Dengan demikian, cara kedua sistem operasi menampilkan dan mengelola proses dapat dibandingkan.
 
 #### 1. Menampilkan Proses pada Windows (Task Manager)
+<img width="1362" height="727" alt="01-task-manager" src="https://github.com/user-attachments/assets/531799c1-0462-4cee-b663-8427e1f3cc21" />
 
-![Uploading 01-task-manager.PNG…]()
-(01-task-manager.png)
+
+
 
 Task Manager dibuka dengan kombinasi tombol `Ctrl + Shift + Esc`, kemudian dipilih tab **Processes**. Pada tab ini ditampilkan berbagai proses yang sedang berjalan, lengkap dengan penggunaan CPU, memori, disk, jaringan, dan konsumsi daya (*power usage*). Daftar diurutkan berdasarkan penggunaan CPU tertinggi.
 
