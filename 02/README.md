@@ -97,7 +97,8 @@ Task Manager dibuka dengan kombinasi tombol `Ctrl + Shift + Esc`, kemudian dipil
 
 #### 2. Menyiapkan Linux dengan WSL dan Ubuntu
 
-![Welcome to WSL](02-wsl-welcome.png)
+<img width="648" height="119" alt="02-wsl-welcome" src="https://github.com/user-attachments/assets/f48ac690-7a2f-475c-932f-2dc40704b734" />
+(02-wsl-welcome.png)
 
 ![Akun Ubuntu](03-ubuntu-akun.png)
 
