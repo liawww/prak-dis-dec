@@ -89,7 +89,7 @@ Task Manager dibuka dengan kombinasi tombol `Ctrl + Shift + Esc`, kemudian dipil
 
 **Analisis Output:**
 
-- Saat pengamatan, penggunaan CPU tercatat 67%, memori 78%, disk 3%, dan jaringan 0%.
+- Saat pengamatan, penggunaan CPU tercatat 74%, memori 91%, disk 6%, dan jaringan 0%.
 - Proses dengan penggunaan CPU tertinggi adalah `rsEngineSvc` (35,3%), disusul `Desktop Window Manager` (9,7%) yang mengelola tampilan jendela.
 - Proses `Google Chrome (19)` menggunakan memori terbesar, yaitu 698,8 MB. Angka (19) menunjukkan bahwa satu aplikasi Chrome memunculkan beberapa proses sekaligus.
 - Tampak pula berbagai proses sistem seperti `System`, `Windows Explorer`, `Runtime Broker`, `CTF Loader`, dan beberapa `Service Host`, yang berjalan di latar belakang tanpa disadari pengguna.
