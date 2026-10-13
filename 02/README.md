@@ -307,7 +307,8 @@ schema = strawberry.Schema(query=Query)
 
 #### 6. Menjalankan Server
 
-![Server berjalan](15-server-jalan.png)
+<img width="943" height="391" alt="15-graphql-server" src="https://github.com/user-attachments/assets/528d3983-c617-4c9d-bb32-3a1a81e78782" />
+
 
 Server dijalankan dengan perintah:
 
