@@ -329,7 +329,8 @@ Browser dibuka, kemudian diakses alamat `http://localhost:8000/graphql`. Muncul 
 
 #### 8. Menuliskan dan Menjalankan Query
 
-![Query pada GraphiQL](17-query.png)
+<img width="562" height="285" alt="17-graphql-query" src="https://github.com/user-attachments/assets/2c2e601e-7f59-4b81-90e9-548739ccb4e5" />
+
 
 Pada sisi kiri GraphiQL dituliskan query berikut. Query ini meminta server mengirim daftar `books`, dan dari setiap buku hanya diminta field `title` dan `author`:
 
@@ -342,7 +343,8 @@ Pada sisi kiri GraphiQL dituliskan query berikut. Query ini meminta server mengi
 }
 ```
 
-![Hasil query](18-hasil-query.png)
+<img width="710" height="243" alt="18-graphql-response" src="https://github.com/user-attachments/assets/b55ac19a-0146-4c32-adee-74d239c93147" />
+
 
 Setelah tombol *run* ditekan, hasil ditampilkan pada sisi kanan dalam format JSON:
 
@@ -434,7 +436,8 @@ Kode lengkap tersedia pada berkas [client.py](client.py).
 
 #### 2. Menjalankan Server dan Client
 
-![Hasil client](19-hasil-client.png)
+<img width="926" height="440" alt="19-hasil-client" src="https://github.com/user-attachments/assets/5ceb5bc7-3f2a-416a-88bf-a5d4b1461c4e" />
+
 
 Server harus berjalan terlebih dahulu pada satu terminal, kemudian client dijalankan pada terminal lain (dengan environment yang sama aktif):
 
@@ -461,7 +464,8 @@ Daftar buku dari GraphQL server:
 
 #### 3. Menghentikan Server
 
-![Server dimatikan](20-server-mati.png)
+<img width="737" height="270" alt="20-server-mati" src="https://github.com/user-attachments/assets/f372cf8c-d28d-42e1-a370-b85d5b4695cc" />
+
 
 Setelah seluruh pengujian selesai, server dihentikan dengan menekan `Ctrl + C` pada terminal tempat `strawberry dev schema` dijalankan. Proses server berhenti dan alamat `localhost:8000` tidak lagi dapat diakses.
 
