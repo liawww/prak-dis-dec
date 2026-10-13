@@ -81,7 +81,8 @@ Pada praktik pertama, proses diamati pada dua sistem operasi, yaitu Windows meng
 
 #### 1. Menampilkan Proses pada Windows (Task Manager)
 
-![Task Manager](01-task-manager.png)
+![Uploading 01-task-manager.PNG…]()
+(01-task-manager.png)
 
 Task Manager dibuka dengan kombinasi tombol `Ctrl + Shift + Esc`, kemudian dipilih tab **Processes**. Pada tab ini ditampilkan berbagai proses yang sedang berjalan, lengkap dengan penggunaan CPU, memori, disk, jaringan, dan konsumsi daya (*power usage*). Daftar diurutkan berdasarkan penggunaan CPU tertinggi.
 
