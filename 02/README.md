@@ -83,16 +83,15 @@ Pada praktik pertama, proses diamati pada dua sistem operasi, yaitu Windows meng
 <img width="1362" height="727" alt="01-task-manager" src="https://github.com/user-attachments/assets/531799c1-0462-4cee-b663-8427e1f3cc21" />
 
 
-
-
 Task Manager dibuka dengan kombinasi tombol `Ctrl + Shift + Esc`, kemudian dipilih tab **Processes**. Pada tab ini ditampilkan berbagai proses yang sedang berjalan, lengkap dengan penggunaan CPU, memori, disk, jaringan, dan konsumsi daya (*power usage*). Daftar diurutkan berdasarkan penggunaan CPU tertinggi.
 
 **Analisis Output:**
 
 - Saat pengamatan, penggunaan CPU tercatat 74%, memori 91%, disk 6%, dan jaringan 0%.
-- Proses dengan penggunaan CPU tertinggi adalah `rsEngineSvc` (35,3%), disusul `Desktop Window Manager` (9,7%) yang mengelola tampilan jendela.
-- Proses `Google Chrome (19)` menggunakan memori terbesar, yaitu 698,8 MB. Angka (19) menunjukkan bahwa satu aplikasi Chrome memunculkan beberapa proses sekaligus.
-- Tampak pula berbagai proses sistem seperti `System`, `Windows Explorer`, `Runtime Broker`, `CTF Loader`, dan beberapa `Service Host`, yang berjalan di latar belakang tanpa disadari pengguna.
+- Proses dengan penggunaan CPU tertinggi adalah rsEngineSvc (29,1%) dengan power usage Very high, disusul Search (15,1%, power usage High) dan Desktop Window Manager (6,1%) yang mengelola tampilan jendela.
+- Proses Google Chrome (19) menggunakan memori terbesar, yaitu 1.024,5 MB. Angka (19) menunjukkan bahwa satu aplikasi Chrome memunculkan beberapa proses sekaligus.
+- Penggunaan memori sistem yang mencapai 91% menunjukkan bahwa memori komputer hampir terpakai seluruhnya oleh proses-proses yang berjalan.
+- Tampak pula berbagai proses lain seperti Rainmeter, Windows Explorer, System, NVIDIA Container, Lively Wallpaper, Runtime Broker, CTF Loader, dan beberapa Service Host, yang berjalan di latar belakang tanpa disadari pengguna.
 - Banyaknya proses yang tampil menunjukkan bahwa sistem operasi mengelola banyak proses secara bersamaan, sesuai dengan sifat transparan pengelolaan proses pada satu node.
 
 #### 2. Menyiapkan Linux dengan WSL dan Ubuntu
@@ -103,7 +102,9 @@ Task Manager dibuka dengan kombinasi tombol `Ctrl + Shift + Esc`, kemudian dipil
 <img width="664" height="462" alt="03-ubuntu-akun" src="https://github.com/user-attachments/assets/03acce07-dc7e-40a8-8299-63e4b1f512e8" />
 
 
-Agar proses pada Linux dapat diamati, digunakan WSL. Setelah WSL terpasang dan jendela *Welcome to WSL* muncul, Ubuntu dijalankan. Pada pembukaan pertama, Ubuntu meminta pembuatan akun pengguna sehingga diisi nama pengguna dan password, kemudian dipilih `y` pada pertanyaan pengumpulan data metrik. Setelah tahap ini selesai, terminal Ubuntu siap digunakan.
+Agar proses pada Linux dapat diamati, digunakan WSL. Dari Command Prompt Windows dijalankan perintah wsl, sehingga prompt berubah menjadi afenlia@DESKTOP-UUH2NR5:/mnt/c/Users/ASUS$. Prompt ini menandakan bahwa shell Linux (Ubuntu) sudah aktif, sedangkan /mnt/c adalah drive C: milik Windows yang dipasang (mount) di dalam WSL.
+
+Pada pembukaan pertama, Ubuntu melakukan penyiapan instance baru (Provisioning the new WSL instance Ubuntu) dan meminta pembuatan akun pengguna. Diisi nama pengguna afenlia beserta password, kemudian dipilih y pada pertanyaan pengumpulan data metrik platform. Setelah tahap ini selesai, terminal Ubuntu siap digunakan.
 
 #### 3. Memasang `htop` dan Menampilkan Proses pada Linux
 
@@ -113,19 +114,19 @@ Agar proses pada Linux dapat diamati, digunakan WSL. Setelah WSL terpasang dan j
 <img width="1366" height="729" alt="05-htop-proses" src="https://github.com/user-attachments/assets/1d7d305b-9c52-48a3-954b-5521041a98ce" />
 
 
-Pada terminal Ubuntu dijalankan perintah `htop`, namun muncul pesan bahwa perintah tersebut belum terpasang. Oleh karena itu, daftar paket diperbarui dan `htop` dipasang, lalu dijalankan kembali:
+Agar proses dapat diamati dengan htop, aplikasi tersebut dipasang terlebih dahulu. Daftar paket diperbarui dan htop dipasang dalam satu perintah, kemudian htop dijalankan:
 
 ```
-htop
-sudo apt update
-sudo apt install htop
+sudo apt update && sudo apt install htop -y
 htop
 ```
+
+Perintah sudo meminta password pengguna ([sudo: authenticate] Password:). Operator && membuat perintah kedua hanya dijalankan jika apt update berhasil, sedangkan opsi -y menjawab "ya" secara otomatis pada konfirmasi pemasangan. Pada tangkapan layar terlihat apt mengambil (Get) daftar paket dari repositori Ubuntu (resolute, resolute-updates, resolute-security, dan resolute-backports).
 
 **Analisis Output:**
 
 - `htop` menampilkan daftar proses lengkap dengan PID, pengguna (*USER*), penggunaan CPU dan memori, serta perintah yang dijalankan.
-- Pada bagian atas terlihat penggunaan tiap *core* CPU, penggunaan memori (sekitar 325 MB dari 1,81 GB), dan jumlah proses (*Tasks*).
+- Pada bagian atas terlihat keempat core CPU (0 sampai 3) yang hampir tidak terpakai (0,0%), penggunaan memori 344 MB dari 1,81 GB, swap 0K dari 1,00 GB, serta jumlah proses (Tasks) sebanyak 27 dengan 12 thread. Load average tercatat 0,05 0,10 0,09 dan uptime 00:13:50.
 - Proses pertama adalah `/sbin/init` dengan PID 1, yaitu proses induk yang menjalankan proses-proses lainnya pada sistem Linux.
 
 #### 4. Menjalankan Aplikasi dan Melihat Proses yang Dimunculkan
@@ -136,17 +137,18 @@ htop
 <img width="1363" height="723" alt="07-nano-di-htop" src="https://github.com/user-attachments/assets/d49919b8-ea03-420c-a526-5106386ef46f" />
 
 
-Aplikasi yang dijalankan adalah editor teks **nano** dengan membuka berkas bernama `tugas`:
+Aplikasi yang dijalankan adalah editor teks nano (versi 8.7.1) dengan membuka berkas bernama tugas:
 
 ```
 nano tugas
 ```
 
-Setelah nano terbuka pada satu jendela terminal, dibuka jendela terminal Ubuntu kedua, lalu dijalankan `htop` untuk memeriksa daftar proses.
+Setelah nano terbuka pada satu jendela terminal, dibuka jendela terminal Ubuntu kedua, lalu dijalankan htop untuk memeriksa daftar proses. Kedua jendela ditampilkan berdampingan, htop di sebelah kiri dan nano di sebelah kanan.
 
 **Analisis Output:**
 
-- Pada daftar proses `htop` muncul baris baru dengan perintah `nano tugas` dan PID **961**.
+- Pada daftar proses htop muncul baris baru dengan perintah nano tugas, pengguna afenlia, dan PID 961 (penggunaan memori 0,2%, status S atau sleeping karena nano sedang menunggu masukan dari pengguna).
+- Jumlah proses (Tasks) naik menjadi 31 dibandingkan 27 sebelumnya, sebagian karena terminal kedua dan proses htop itu sendiri ikut berjalan.
 - Hal ini membuktikan bahwa setiap aplikasi yang dijalankan akan menjadi proses yang tercatat dan dikelola oleh sistem operasi dengan PID tertentu.
 
 #### 5. Mematikan Proses Melalui Perintah (tanpa Keluar dari Aplikasi)
@@ -159,8 +161,7 @@ Setelah nano terbuka pada satu jendela terminal, dibuka jendela terminal Ubuntu 
 
 Proses nano dimatikan dari luar aplikasi, bukan dengan perintah keluar bawaan nano (`Ctrl + X`). Terdapat dua cara yang dicoba:
 
-**a. Melalui `htop`.** Proses nano dipilih pada daftar, kemudian ditekan tombol **F9 (Kill)**, dipilih sinyal **SIGTERM** (sinyal 15), dan ditekan Enter.
-
+**a. Melalui `htop`.** Proses nano dipilih pada daftar, kemudian ditekan tombol **F9 (Kill)**, Muncul daftar sinyal pada panel Send signal, dipilih sinyal **SIGTERM** (sinyal 15), dan ditekan Enter untuk mengirim.
 **b. Melalui perintah `pkill`.** Proses dimatikan berdasarkan namanya:
 
 ```
@@ -171,7 +172,7 @@ Padanan lain yang dapat digunakan adalah mematikan berdasarkan PID, yaitu `kill 
 
 **Analisis Output:**
 
-- Pada jendela nano muncul pesan `Received SIGHUP or SIGTERM`, kemudian aplikasi langsung tertutup.
+- Pada terminal tempat nano dijalankan muncul pesan `Received SIGHUP or SIGTERM`, kemudian aplikasi langsung tertutup dan prompt shell kembali tampil.
 - Hal ini menandakan bahwa proses dihentikan oleh sistem operasi melalui sinyal, bukan karena pengguna keluar dari aplikasi.
 - Proses nano tidak lagi muncul pada daftar `htop` setelah perintah dijalankan.
 
@@ -194,35 +195,38 @@ Untuk jenis proses lain, tersedia cara yang menyesuaikan sifat proses tersebut:
 
 **Analisis Output:**
 
-- Setelah `nano tugas` dijalankan kembali, `htop` menampilkan PID yang berbeda dari sebelumnya (PID 961 menjadi [PID baru]).
+- Setelah `nano tugas` dijalankan kembali, `htop` menampilkan baris `nano tugas` dengan PID baru, yaitu *757* (pengguna `afenlia`, status `S`).
 - Hal ini menunjukkan bahwa *restart* sebenarnya membuat proses baru dengan PID baru, bukan menghidupkan kembali proses yang sama.
 
 #### 7. Ringkasan Pekerjaan Praktik 1
 
-Secara berurutan, pekerjaan pada Praktik 1 adalah menampilkan proses pada Windows melalui Task Manager, menyiapkan Ubuntu pada WSL, memasang dan menjalankan `htop`, menjalankan aplikasi nano dan menemukan prosesnya (PID 961), mematikan proses tersebut melalui `htop` dan `pkill` tanpa keluar dari aplikasi, serta me-*restart* proses dengan menjalankan kembali aplikasinya. Praktik ini menunjukkan bahwa pada satu node seluruh siklus hidup proses ditangani oleh sistem operasi.
+Secara berurutan, pekerjaan pada Praktik 1 adalah menampilkan proses pada Windows melalui Task Manager, menyiapkan Ubuntu pada WSL, memasang dan menjalankan `htop`, menjalankan aplikasi nano dan menemukan prosesnya (PID 961), mematikan proses tersebut melalui `htop` dan `pkill` tanpa keluar dari aplikasi, serta me-*restart* proses dengan menjalankan kembali aplikasinya (PID baru 757). Praktik ini menunjukkan bahwa pada satu node seluruh siklus hidup proses ditangani oleh sistem operasi.
 
 ---
 
 ### PRAKTIK 2 – GRAPHQL SERVER MENGGUNAKAN STRAWBERRY
 
-#### 1. Mempelajari dan Memasang `uv`
+#### 1. Menyiapkan Lingkungan dengan uv (Memasang uv, Membuat Workspace, Environment, dan Instalasi Paket)
 
 <img width="1360" height="728" alt="11-install-strawberry" src="https://github.com/user-attachments/assets/3c08da0c-c77b-443e-9d81-5bbbb5a7a70e" />
 
 
-Langkah pertama adalah mempelajari penggunaan `uv` berdasarkan catatan pada repositori NEO-X-School yang disebutkan di modul. Apabila `uv` belum tersedia, pemasangan dilakukan melalui `winget`, kemudian dilakukan pengecekan versi untuk memastikan `uv` terpasang dengan benar:
+Langkah pertama adalah mempelajari penggunaan `uv` berdasarkan catatan pada repositori NEO-X-School yang disebutkan di modul. Seluruh langkah penyiapan pada praktik ini dilakukan di terminal Ubuntu (WSL), sehingga perintah yang dipakai adalah perintah Linux.
 
-```
-winget install astral-sh.uv
-uv --version
-```
+#### a. Memasang uv. 
+uv.dipasang menggunakan skrip instalasi resmi:
 
-#### 2. Membuat Workspace dan Menentukan Versi Python
+``
+curl -LsSf https://astral.sh/uv/install.sh | sh
+``
+Setelah selesai, installer menampilkan pesan `everything's installed!` beserta daftar program yang terpasang (`uv` dan `uvx`). Installer juga memberi tahu bahwa direktori `$HOME/.local/bin` perlu ditambahkan ke `PATH`. Agar `uv` langsung dikenali pada terminal yang sedang berjalan tanpa membuka terminal baru, dijalankan:
 
-<img width="1366" height="717" alt="12-server-strawberry" src="https://github.com/user-attachments/assets/64e8a96b-446a-4380-97a7-f8f423a6ced9" />
+``
+source $HOME/.local/bin/env
+``
 
-
-Workspace dengan nama `workspace-01` dibuat sebagai folder kerja agar pekerjaan praktikum tertata dan terpisah dari proyek lain. Pada workspace tersebut digunakan Python versi 3.14 sesuai petunjuk modul. `uv` akan mengunduh Python tersebut apabila belum tersedia pada komputer.
+#### b. Membuat workspace.
+Workspace dengan nama `workspace-01` dibuat sebagai folder kerja agar pekerjaan praktikum tertata dan terpisah dari proyek lain, kemudian terminal berpindah ke folder tersebut:
 
 ```
 uv init --python 3.14 workspace-01
@@ -230,30 +234,24 @@ cd workspace-01
 uv python install 3.14
 ```
 
-Opsi `--python 3.14` menetapkan versi Python proyek sehingga pemilihan versi tidak bergantung pada Python bawaan sistem.
-
-#### 3. Membuat dan Mengaktifkan Environment
-
-<img width="1366" height="722" alt="13-graphql-query" src="https://github.com/user-attachments/assets/0702ee61-4dec-4e7e-9e05-192125a8069c" />
-
-
-*Virtual environment* dibuat agar paket yang dipasang untuk praktikum ini tidak bercampur dengan paket lain di komputer, lalu diaktifkan:
+#### c. Menentukan versi Python, membuat, dan mengaktifkan environment.
+Pada workspace tersebut digunakan Python versi 3.14 sesuai petunjuk modul. *Virtual environment* dibuat agar paket yang dipasang untuk praktikum ini tidak bercampur dengan paket lain di komputer, lalu diaktifkan:
 
 ```
 uv venv --python 3.14
 .venv\Scripts\activate
 ```
 
+Opsi --python 3.14 menetapkan versi Python environment sehingga tidak bergantung pada versi Python bawaan lain di sistem.
+
 **Analisis Output:**
 
-Setelah environment aktif, awal baris terminal diberi tambahan nama environment (`(workspace-01)` atau `(.venv)`). Hal ini menandakan paket yang dipasang berikutnya hanya berlaku di dalam environment ini.
+- uv menampilkan Using CPython 3.14.4 interpreter at: /usr/bin/python3.14, artinya Python 3.14.4 sudah tersedia di sistem sehingga langsung dipakai tanpa perlu diunduh.
+- Muncul pula Creating virtual environment at: .venv dan petunjuk aktivasi Activate with: source .venv/bin/activate.
+- Setelah environment aktif, awal baris terminal diberi tambahan nama environment, yaitu (workspace-01). Hal ini menandakan paket yang dipasang berikutnya hanya berlaku di dalam environment ini.
 
-#### 4. Instalasi Paket yang Diperlukan
-
-<img width="1195" height="693" alt="14-graphql-client" src="https://github.com/user-attachments/assets/63c27203-f7b9-4e5d-8dfc-202f81c2a168" />
-
-
-Paket Strawberry GraphQL beserta fitur CLI-nya dipasang ke dalam environment dengan perintah berikut (pada Windows digunakan tanda petik ganda):
+#### d. Instalasi Paket yang Diperlukan
+Paket Strawberry GraphQL beserta fitur CLI-nya dipasang ke dalam environment dengan perintah berikut. Tanda petik tunggal dipakai agar tanda kurung siku [cli] tidak ditafsirkan oleh shell:
 
 ```
 uv pip install "strawberry-graphql[cli]"
@@ -265,7 +263,7 @@ uv pip install "strawberry-graphql[cli]"
 - Paket `graphql-core` menyediakan implementasi inti spesifikasi GraphQL, `starlette` dan `uvicorn` menyediakan lapisan server web, sedangkan `typer`, `click`, dan `rich` mendukung perintah `strawberry` pada terminal.
 - Proses instalasi berlangsung sangat cepat karena `uv` memanfaatkan *cache*.
 
-#### 5. Menyiapkan `schema.py`
+#### 2. Menyiapkan `schema.py`
 
 Berkas `schema.py` yang telah disediakan diletakkan pada folder `workspace-01`. Isi berkas ini kurang lebih sebagai berikut:
 
@@ -305,29 +303,31 @@ schema = strawberry.Schema(query=Query)
 - `class Query` adalah tipe akar (*root*) yang memuat query `books`, yang dihubungkan dengan resolver `get_books`.
 - `strawberry.Schema(query=Query)` membentuk schema akhir yang akan dilayani oleh server.
 
-#### 6. Menjalankan Server
+#### 3. Menjalankan Server
+<img width="1366" height="717" alt="12-server-strawberry" src="https://github.com/user-attachments/assets/64e8a96b-446a-4380-97a7-f8f423a6ced9" />
 
-<img width="943" height="391" alt="15-graphql-server" src="https://github.com/user-attachments/assets/528d3983-c617-4c9d-bb32-3a1a81e78782" />
-
-
-Server dijalankan dengan perintah:
+Dari folder `workspace-01`, environment diaktifkan kembali kemudian Server dijalankan dengan perintah:
 
 ```
+source .venv/bin/activate
 strawberry dev schema
 ```
+Catatan: perintah `wsl` pada awal tangkapan layar menghasilkan pesan `Command'wsl' not found` karena terminal sudah berada di dalam Ubuntu, sehingga perintah tersebut tidak diperlukan.
 
 **Analisis Output:**
 
-Terminal menampilkan bahwa server aktif pada alamat `http://0.0.0.0:8000/graphql`. Artinya server GraphQL mendengarkan permintaan pada port 8000 dengan *endpoint* `/graphql`. Selama server berjalan, terminal ini tidak boleh ditutup.
+Terminal menampilkan Running strawberry on http://0.0.0.0:8000/graphql. Artinya server GraphQL mendengarkan permintaan pada port 8000 dengan endpoint /graphql. Selama server berjalan, terminal ini tidak boleh ditutup karena server adalah proses yang terus berjalan (foreground).
 
-#### 7. Mengakses GraphiQL melalui Browser
+#### 4. Mengakses GraphiQL melalui Browser
 
 <img width="943" height="391" alt="15-graphql-server" src="https://github.com/user-attachments/assets/aec6c3d2-42bb-4973-8186-a431125cba64" />
 
 
-Browser dibuka, kemudian diakses alamat `http://localhost:8000/graphql`. Muncul antarmuka **GraphiQL** yang terbagi menjadi dua bagian, yaitu sisi kiri untuk menuliskan query dan sisi kanan untuk menampilkan hasil query. Tombol *run* (segitiga merah muda) digunakan untuk menjalankan query.
+Browser dibuka, kemudian diakses alamat `http://localhost:8000/graphql.` Sesuai modul, alamat `0.0.0.0` dapat diganti dengan `localhost` atau `127.0.0.1` karena ketiganya mengarah ke server yang sama. Muncul antarmuka *GraphiQL* yang terbagi menjadi dua bagian, yaitu sisi kiri untuk menuliskan query dan sisi kanan untuk menampilkan hasil query. Tombol run (segitiga merah muda) digunakan untuk menjalankan query.
 
-#### 8. Menuliskan dan Menjalankan Query
+Pada bilah alamat terlihat parameter `?q=...` yang berisi query dalam bentuk terkodekan (misalnya `%7B` untuk `{` dan `%0A` untuk baris baru). GraphiQL menyimpan isi query pada URL sehingga query yang sama dapat dibuka kembali.
+
+#### 5. Menuliskan dan Menjalankan Query
 
 <img width="562" height="285" alt="17-graphql-query" src="https://github.com/user-attachments/assets/2c2e601e-7f59-4b81-90e9-548739ccb4e5" />
 
@@ -342,6 +342,7 @@ Pada sisi kiri GraphiQL dituliskan query berikut. Query ini meminta server mengi
   }
 }
 ```
+Saat query diketik, GraphiQL menampilkan saran otomatis (autocomplete) seperti `query`, `mutation`, `subscription`, dan `fragment` yang diambil dari schema server.
 
 <img width="710" height="243" alt="18-graphql-response" src="https://github.com/user-attachments/assets/b55ac19a-0146-4c32-adee-74d239c93147" />
 
@@ -360,6 +361,9 @@ Setelah tombol *run* ditekan, hasil ditampilkan pada sisi kanan dalam format JSO
   }
 }
 ```
+Query yang sama juga diuji melalui alamat `http://127.0.0.1:8000/graphql` dengan penulisan lengkap menggunakan kata kunci `query { ... }`. Hasilnya identik, karena penulisan `{ ... }` hanyalah bentuk singkat dari `query { ... }`.
+
+<img width="1366" height="722" alt="13-graphql-query" src="https://github.com/user-attachments/assets/0702ee61-4dec-4e7e-9e05-192125a8069c" />
 
 **Analisis Output:**
 
@@ -372,14 +376,15 @@ Setelah tombol *run* ditekan, hasil ditampilkan pada sisi kanan dalam format JSO
 ### PRAKTIK 3 – MEMBUAT CLIENT UNTUK GRAPHQL SERVER
 
 #### 1. Membuat Program Client
+<img width="1195" height="693" alt="14-graphql-client" src="https://github.com/user-attachments/assets/63c27203-f7b9-4e5d-8dfc-202f81c2a168" />
 
-Tugas terakhir adalah membuat client menggunakan bahasa pemrograman bebas yang mengakses GraphQL server di atas. Bahasa yang dipilih adalah **Python**, dengan modul bawaan `urllib` dan `json` sehingga tidak diperlukan instalasi paket tambahan. Client dibuat pada berkas `client.py`:
+Tugas terakhir adalah membuat client menggunakan bahasa pemrograman bebas yang mengakses GraphQL server di atas. Bahasa yang dipilih adalah **Python**, dengan modul bawaan `urllib.request` dan `json` sehingga tidak diperlukan instalasi paket tambahan. Client dibuat pada berkas `client.py`:
 
 ```python
-import json
-import urllib.error
 import urllib.request
+import json
 
+# URL GraphQL Server
 URL = "http://localhost:8000/graphql"
 
 QUERY = """
@@ -391,46 +396,27 @@ QUERY = """
 }
 """
 
+# Membentuk request HTTP POST berisi query dalam format JSON
+data = json.dumps({"query": query}).encode("utf-8")
+req = urllib.request.Request(
+    url,
+    data=data,
+    headers={"Content-Type": "application/json"},
+)
 
-def kirim_query(query: str) -> dict:
-    """Mengirim query GraphQL ke server lewat HTTP POST dan mengembalikan hasilnya."""
-    payload = json.dumps({"query": query}).encode("utf-8")
-    request = urllib.request.Request(
-        URL,
-        data=payload,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    with urllib.request.urlopen(request, timeout=10) as response:
-        return json.loads(response.read().decode("utf-8"))
+# Mengirim request dan membaca respons dari server
+with urllib.request.urlopen(req) as response:
+    result = json.loads(response.read().decode("utf-8"))
 
-
-def main():
-    try:
-        hasil = kirim_query(QUERY)
-    except urllib.error.URLError as error:
-        print(f"Gagal terhubung ke server: {error}")
-        return
-
-    if "errors" in hasil:
-        print("Server mengembalikan error:", hasil["errors"])
-        return
-
-    print("Daftar buku dari GraphQL server:")
-    for nomor, buku in enumerate(hasil["data"]["books"], start=1):
-        print(f"{nomor}. {buku['title']} - {buku['author']}")
-
-
-if __name__ == "__main__":
-    main()
+print("=== HASIL QUERY DARI GRAPHQL CLIENT ===")
+print(json.dumps(result, indent=2))
 ```
 
 **Penjelasan Kode:**
 
 - Query GraphQL dikirim sebagai JSON berbentuk `{"query": "..."}` dengan metode **HTTP POST** ke endpoint `/graphql`.
 - Respons server dibaca dan di-*parse* dari JSON menjadi *dictionary* Python.
-- Program memeriksa key `errors` untuk menangani kesalahan dari sisi GraphQL, serta menangkap `URLError` apabila server belum dijalankan.
-- Data pada `hasil["data"]["books"]` ditampilkan satu per satu pada terminal.
+- Hasil ditampilkan ke terminal dalam format JSON yang rapi menggunakan `json.dumps(..., indent=2)`.
 
 Kode lengkap tersedia pada berkas [client.py](client.py).
 
@@ -439,23 +425,29 @@ Kode lengkap tersedia pada berkas [client.py](client.py).
 <img width="926" height="440" alt="19-hasil-client" src="https://github.com/user-attachments/assets/5ceb5bc7-3f2a-416a-88bf-a5d4b1461c4e" />
 
 
-Server harus berjalan terlebih dahulu pada satu terminal, kemudian client dijalankan pada terminal lain (dengan environment yang sama aktif):
-
+Server harus berjalan terlebih dahulu pada satu terminal (`strawberry dev schema`), kemudian client dijalankan pada terminal lain, yaitu terminal PowerShell di Visual Studio Code, dengan environment yang aktif:
 ```
-strawberry dev schema
-```
-
-```
+Set-ExecutionPolicy Unrestricted -Scope Process
+.\Scripts\Activate.ps1
 python client.py
 ```
+Perintah `Set-ExecutionPolicy Unrestricted -Scope Process` diperlukan karena PowerShell secara bawaan memblokir eksekusi skrip, sehingga skrip aktivasi environment tidak dapat dijalankan. Opsi `-Scope Process` membuat pelonggaran ini hanya berlaku pada sesi terminal yang sedang dibuka. Setelah itu `Activate.ps1` mengaktifkan environment (prompt menjadi `(workspace-01) PS ...`), lalu `python client.py` menjalankan client.
 
 **Analisis Output:**
+Client menampilkan judul === HASIL QUERY DARI GRAPHQL CLIENT === diikuti hasil JSON dari server:
 
-Client menampilkan daftar buku:
 
-```
-Daftar buku dari GraphQL server:
-1. The Great Gatsby - F. Scott Fitzgerald
+```json
+{
+  "data": {
+    "books": [
+      {
+        "title": "The Great Gatsby",
+        "author": "F. Scott Fitzgerald"
+      }
+    ]
+  }
+}
 ```
 
 - Data yang ditampilkan sama dengan hasil pada GraphiQL.
@@ -467,7 +459,7 @@ Daftar buku dari GraphQL server:
 <img width="737" height="270" alt="20-server-mati" src="https://github.com/user-attachments/assets/f372cf8c-d28d-42e1-a370-b85d5b4695cc" />
 
 
-Setelah seluruh pengujian selesai, server dihentikan dengan menekan `Ctrl + C` pada terminal tempat `strawberry dev schema` dijalankan. Proses server berhenti dan alamat `localhost:8000` tidak lagi dapat diakses.
+Setelah seluruh pengujian selesai, server dihentikan dengan menekan `Ctrl + C` pada terminal tempat `strawberry dev schema` dijalankan, sesuai petunjuk modul. Pada tangkapan layar tampak tanda `^C` pada terminal setelah tombol tersebut ditekan. Setelah server berhenti, alamat `localhost:8000` tidak lagi dapat diakses.
 
 ## D. KESIMPULAN
 
