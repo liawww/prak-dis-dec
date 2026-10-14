@@ -1,4 +1,5 @@
 # Praktikum Minggu 02
+<img width="1362" height="727" alt="01-task-manager" src="https://github.com/user-attachments/assets/331f7225-a65b-463d-b817-f3a01b131cfa" />
 
 Laporan Praktikum Minggu 02
 
