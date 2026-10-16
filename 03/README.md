@@ -183,7 +183,10 @@ Dua *thread* masing-masing mengambil Rp 80 dari saldo awal Rp 100.
 
 **Visualisasi (digambar manual):**
 
-> **[ISI SENDIRI: foto gambar tangan (pensil/ballpoint), mis. `gambar-race-condition.jpg`, dengan format `![Gambar race condition](gambar-race-condition.jpg)`. Panduan isi gambar ada di pesan Claude.]**
+![Visualisasi Race Condition](gambar-race-condition.png)
+
+<img width="817" height="534" alt="gambar-race-condition" src="https://github.com/user-attachments/assets/64f38565-7ad8-4cf9-ae18-014e486bf0d9" />
+
 
 ##### b. race-conditions-02.py (dengan *lock*)
 
@@ -219,7 +222,10 @@ Program berhenti (*hang*) dan tidak pernah selesai, sehingga harus dihentikan pa
 
 **Visualisasi (digambar manual):**
 
-> **[ISI SENDIRI: foto gambar tangan, mis. `gambar-deadlock.jpg`, dengan format `![Gambar deadlock](gambar-deadlock.jpg)`. Panduan isi gambar ada di pesan Claude.]**
+![Visualisasi Deadlock](gambar-deadlock.png)
+
+<img width="790" height="515" alt="gambar-deadlock" src="https://github.com/user-attachments/assets/93b72132-2975-4bba-bcce-a5d52918d021" />
+
 
 ##### b. deadlock-02.py (menghindari *deadlock* dengan *timeout*)
 
@@ -260,7 +266,10 @@ Program dijalankan dengan `python3 raft.py`. Keluarannya (langkah 1-6, 7-14, dan
 
 **Visualisasi (digambar manual):**
 
-> **[ISI SENDIRI: foto gambar tangan, mis. `gambar-raft.jpg`, dengan format `![Gambar Raft](gambar-raft.jpg)`. Panduan isi gambar ada di pesan Claude.]**
+![Visualisasi Algoritma Raft](gambar-raft.png)
+
+<img width="947" height="455" alt="gambar-raft" src="https://github.com/user-attachments/assets/04f81797-0ec6-4d4f-b12e-a806dc8843e9" />
+
 
 #### Membuat modul Python untuk Raft dan contoh simulasinya
 
