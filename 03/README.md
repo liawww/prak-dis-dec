@@ -283,8 +283,11 @@ Dijalankan dengan:
 ```
 python3 demo_raft.py
 ```
+```
+![Output demo_raft.py](raft-modul-output.png)
+```
+<img width="541" height="232" alt="raft-modul-output" src="https://github.com/user-attachments/assets/d509248f-b1e5-429d-b8f1-4efaad526ab0" />
 
-> **[ISI SENDIRI: screenshot hasil `python3 demo_raft.py` di terminal Ubuntu, mis. `raft-modul-output.png`, dengan format `![Output demo_raft.py](raft-modul-output.png)`. Karena waktu *timeout* acak, hasilnya bisa berbeda dari raft.py (mis. LEADER-nya Node 1).]**
 
 **Analisis Output:**
 
