@@ -149,8 +149,15 @@ Dijalankan dengan `python3 demo_modul.py`:
 #### 0. Program multithreaded (multithreads-example.py)
 
 Program membuat lima *thread* (A sampai E) yang masing-masing mensimulasikan pekerjaan selama 5 detik, lalu dijalankan bersamaan. Program dijalankan berulang kali dengan `python3 multithreads-example.py` sampai keluaran yang berbeda didapat.
+```
+![Run 1](multithread-run-1.png)
+![Run 2](multithread-run-2.png)
+```
 
-> **[ISI SENDIRI: tempel di sini 2 foto hasil menjalankan multithreads-example.py yang urutannya berbeda, mis. `multithread-run-1.png` dan `multithread-run-2.png`, dengan format `![Run 1](multithread-run-1.png)`]**
+<img width="607" height="257" alt="multithread-run-1" src="https://github.com/user-attachments/assets/62ae6b37-9700-4b4a-a2f4-64b358fbe754" />
+
+<img width="530" height="207" alt="multithread-run-2" src="https://github.com/user-attachments/assets/b0f73adb-9c0b-4d54-92d9-eff9d826d456" />
+
 
 **Analisis Output:**
 
