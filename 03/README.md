@@ -182,9 +182,9 @@ Dua *thread* masing-masing mengambil Rp 80 dari saldo awal Rp 100.
 - Penyebabnya: kedua *thread* mengecek `if balance >= amount` hampir bersamaan. Pada saat dicek, saldo masih 100 sehingga keduanya lolos. Di antara pengecekan dan pengurangan ada `time.sleep(0.01)` sehingga *thread* lain sempat masuk sebelum saldo dikurangi. Akibatnya keduanya mengurangi saldo (100 − 80 − 80 = −60). Inilah *race condition*: hasil bergantung pada urutan eksekusi *thread* yang tidak terkendali.
 
 **Visualisasi (digambar manual):**
-
+```
 ![Visualisasi Race Condition](gambar-race-condition.png)
-
+```
 <img width="817" height="534" alt="gambar-race-condition" src="https://github.com/user-attachments/assets/64f38565-7ad8-4cf9-ae18-014e486bf0d9" />
 
 
@@ -221,9 +221,9 @@ Program berhenti (*hang*) dan tidak pernah selesai, sehingga harus dihentikan pa
 - Pada `t1.join()` program menunggu selamanya, sehingga setelah ditekan `Ctrl + C` muncul `KeyboardInterrupt`. Pemanggilan `time.sleep(1)` di tengah program sengaja dipasang untuk memperbesar peluang *deadlock* (`# Increase chance of deadlock`), karena memberi waktu bagi kedua *thread* untuk masing-masing mengambil *lock* pertama sebelum mencoba *lock* kedua.
 
 **Visualisasi (digambar manual):**
-
+```
 ![Visualisasi Deadlock](gambar-deadlock.png)
-
+```
 <img width="790" height="515" alt="gambar-deadlock" src="https://github.com/user-attachments/assets/93b72132-2975-4bba-bcce-a5d52918d021" />
 
 
@@ -265,9 +265,9 @@ Program dijalankan dengan `python3 raft.py`. Keluarannya (langkah 1-6, 7-14, dan
 5. **Catatan simplifikasi:** pada Raft yang sebenarnya, satu *term* hanya boleh punya satu LEADER dan CANDIDATE harus benar-benar mendapat suara mayoritas dari node lain (node hanya memberi satu suara per *term*). Itu sebabnya log FOLLOWER pada simulasi ini tetap 0: replikasi log ke FOLLOWER tidak disimulasikan (`# In real system, replicate to followers`). Simulasi ini hanya menunjukkan prinsip dasarnya: *election timeout* acak, *term*, suara mayoritas, dan *heartbeat* yang menjaga satu LEADER.
 
 **Visualisasi (digambar manual):**
-
+```
 ![Visualisasi Algoritma Raft](gambar-raft.png)
-
+```
 <img width="947" height="455" alt="gambar-raft" src="https://github.com/user-attachments/assets/04f81797-0ec6-4d4f-b12e-a806dc8843e9" />
 
 
