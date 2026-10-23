@@ -1,10 +1,9 @@
 # Laporan Praktikum Modul 4 — Konsistensi dan Replikasi pada Sistem Terdistribusi
 
-| | |
-| **Nama** Laesah Afenlia
-| **NIM** 255410019
-| **Mata Kuliah**  Sistem Terdistribusi dan Terdesentralisasi 
-| **Prodi**  Informatika 1
+**Nama** : Laesah Afenlia
+**NIM**: 255410019
+**Mata Kuliah**:  Sistem Terdistribusi dan Terdesentralisasi 
+**Prodi**:  Informatika 1
 
 Repo ini berisi hasil praktikum dua model replikasi:
 
