@@ -100,9 +100,12 @@ Log replica yang normal memuat pesan `Backup done, starting replica...` dan `sta
 
 📸 **Bukti:** `img/pg-01-dcu.png`, `img/pg-02-dps-healthy.png`, `img/pg-03-log-replica.png`
 
-![dcu](postgresql/src/img/pg-01-dcu.png)
-![dps healthy](postgresql/src/img/pg-02-dps-healthy.png)
-![log replica](postgresql/src/img/pg-03-log-replica.png)
+<img width="949" height="104" alt="pg-01-dcu" src="https://github.com/user-attachments/assets/2fef3bef-5da3-447c-997b-a4c0c608a1d3" />
+
+<img width="948" height="260" alt="pg-02-dps-healthy" src="https://github.com/user-attachments/assets/4300803b-debe-4e5a-b60a-2044b1a490a2" />
+
+<img width="722" height="573" alt="pg-03-log-replica" src="https://github.com/user-attachments/assets/9ded38fb-e0dd-45cb-8a2c-66fc31a98907" />
+
 
 ## 1.4 Pengujian Replikasi
 
