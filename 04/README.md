@@ -126,6 +126,10 @@ Yang diperhatikan:
 - `pg_replication_slots`: `slot_name = replication_slot`, `slot_type = physical`, `active = t`.
 
 📸 `img/pg-04-stat-replication.png`, `img/pg-05-replication-slots.png`
+<img width="977" height="631" alt="pg-04-stat-replication" src="https://github.com/user-attachments/assets/1803d07a-6579-4b34-a100-51b039def8f7" />
+
+<img width="391" height="441" alt="pg-05-replication-slots" src="https://github.com/user-attachments/assets/aae3c5bd-2b3e-48a3-8239-325214c90a8d" />
+
 
 ### b. Cek di replica
 
