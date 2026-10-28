@@ -1,0 +1,6 @@
+alias dcu="sudo docker-compose up -d"
+alias dcd="sudo docker-compose down"
+alias dps="sudo docker ps"
+alias sqli="sqlline -u jdbc:ignite:thin://127.0.0.1:10800"
+alias dln1="sudo docker logs ignite_node1"
+alias dln2="sudo docker logs ignite_node2"

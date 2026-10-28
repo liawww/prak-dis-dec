@@ -1,0 +1,25 @@
+services:
+  ignite_node1:
+    image: apacheignite/ignite:2.16.0
+    container_name: ignite_node1
+    environment:
+      IGNITE_QUIET: "false"
+    ports:
+      - "10800:10800" # Thin client port
+      - "47500:47500" # Discovery port
+    networks:
+      - ignite_net
+
+  ignite_node2:
+    image: apacheignite/ignite:2.16.0
+    container_name: ignite_node2
+    environment:
+      IGNITE_QUIET: "false"
+    ports:
+      - "10801:10800"
+    networks:
+      - ignite_net
+
+networks:
+  ignite_net:
+    driver: bridge
