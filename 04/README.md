@@ -98,7 +98,6 @@ dlr   # log replica
 
 Log replica yang normal memuat pesan `Backup done, starting replica...` dan `started streaming WAL from primary`. Pesan `pg_basebackup failed. Retrying...` di awal itu wajar (primary belum siap).
 
-📸 **Bukti:** `img/pg-01-dcu.png`, `img/pg-02-dps-healthy.png`, `img/pg-03-log-replica.png`
 
 <img width="949" height="104" alt="pg-01-dcu" src="https://github.com/user-attachments/assets/2fef3bef-5da3-447c-997b-a4c0c608a1d3" />
 
@@ -125,7 +124,6 @@ Yang diperhatikan:
 - `pg_stat_replication`: `usename = replicator`, `state = streaming`, `sync_state = async`, dan `sent_lsn/write_lsn/flush_lsn/replay_lsn` bernilai sama (tidak ada lag).
 - `pg_replication_slots`: `slot_name = replication_slot`, `slot_type = physical`, `active = t`.
 
-📸 `img/pg-04-stat-replication.png`, `img/pg-05-replication-slots.png`
 <img width="977" height="631" alt="pg-04-stat-replication" src="https://github.com/user-attachments/assets/1803d07a-6579-4b34-a100-51b039def8f7" />
 
 <img width="391" height="441" alt="pg-05-replication-slots" src="https://github.com/user-attachments/assets/aae3c5bd-2b3e-48a3-8239-325214c90a8d" />
