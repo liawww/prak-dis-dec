@@ -140,13 +140,17 @@ SELECT pg_is_in_recovery();
 ```
 Hasil `t` (true) berarti server tersebut adalah standby/replica.
 
-📸 `img/pg-06-replica-in-recovery.png`
+<img width="612" height="106" alt="pg-06-primary-before-table" src="https://github.com/user-attachments/assets/196920d4-4138-406b-b102-7da279977ceb" />
+`
 
 ### c. Uji manipulasi data
 
 **Sebelum membuat tabel** — jalankan `\dt` di primary dan replica, keduanya `Did not find any tables.`
 
-📸 `img/pg-07-dt-primary-before.png`, `img/pg-08-dt-replica-before.png`
+<img width="573" height="118" alt="pg-07-replica-before-table" src="https://github.com/user-attachments/assets/666bf2a0-d514-473f-8ee1-b127fa005deb" />
+
+<img width="630" height="292" alt="pg-08-primary-insert" src="https://github.com/user-attachments/assets/af83263e-f26a-4ad8-b153-95d639ae45ae" />
+
 
 **Di primary:**
 ```sql
@@ -156,7 +160,8 @@ INSERT INTO testrep (first, second) VALUES (23, 'Test ke dua');
 SELECT * FROM testrep;
 ```
 
-📸 `img/pg-09-primary-insert.png`
+<img width="581" height="285" alt="pg-09-replica-replicated" src="https://github.com/user-attachments/assets/fd92700d-b28c-44d5-91c8-536c3163a67f" />
+
 
 **Di replica:**
 ```sql
@@ -165,7 +170,8 @@ SELECT * FROM testrep;
 ```
 Tabel `testrep` beserta 2 baris datanya muncul otomatis di replica tanpa operasi apa pun, ini membuktikan replikasi berjalan.
 
-📸 `img/pg-10-replica-select.png`
+<img width="594" height="345" alt="pg-10-high-availability" src="https://github.com/user-attachments/assets/586f29e2-f780-418f-aa91-af25a9acb3c5" />
+
 
 > Coba juga `INSERT` langsung di replica. Akan gagal dengan error `cannot execute INSERT in a read-only transaction`, karena replica hanya *read-only*.
 
@@ -177,7 +183,8 @@ Jika primary mati, replica bisa **dipromosikan** menjadi primary.
 ```bash
 sudo docker-compose stop postgres_primary
 ```
-📸 `img/pg-11-stop-primary.png`
+<img width="721" height="84" alt="pg-11-stop-primary" src="https://github.com/user-attachments/assets/d4a574b9-a13b-4c4e-9cad-327da8be0e44" />
+
 
 **2. Promosikan replica** (masuk ke psql di replica):
 ```sql
@@ -185,7 +192,8 @@ SELECT pg_is_in_recovery();   -- t (masih replica)
 SELECT pg_promote();          -- t (berhasil dipromosikan)
 SELECT pg_is_in_recovery();   -- f (sekarang primary, bisa read-write)
 ```
-📸 `img/pg-12-pg-promote.png`
+<img width="822" height="372" alt="pg-12-pg-promote" src="https://github.com/user-attachments/assets/ba39f1ad-63e5-47b7-afa7-9a8f26c4ac3a" />
+
 
 Setelah dipromosikan, node tersebut keluar dari mode recovery dan menerima operasi tulis.
 
@@ -196,7 +204,7 @@ Setelah dipromosikan, node tersebut keluar dari mode recovery dan menerima opera
 dcd
 dps
 ```
-📸 `img/pg-13-dcd.png`
+<img width="553" height="140" alt="pg-13-dcd" src="https://github.com/user-attachments/assets/0e7e21cc-4def-410c-9eac-971f1c036244" />
 
 ---
 
