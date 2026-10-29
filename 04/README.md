@@ -225,7 +225,7 @@ Prasyaratnya sama dengan bagian sebelumnya.
 3. Daemon `dockerd` sudah aktif.
 4. Petunjuk modul memakai Linux, jadi kalau memakai sistem operasi lain perlu ada penyesuaian seperlunya.
    
-<img src="postgresql/src/img/prasyarat-docker.png" width="700"> <br>
+<img width="700" alt="ignite-00-prasyarat" src="img/ignite-00-prasyarat.png" />
 Pembahasan : <br>
 
 Kebutuhan lingkungan sama seperti sebelumnya, sehingga cukup dipastikan Docker dan Docker Compose masih dapat dipakai dan layanan Docker dalam keadaan aktif. <br>
