@@ -54,7 +54,8 @@ Sebelum mengonfigurasi replikasi, dipastikan dulu bahwa Docker dan Docker Compos
 
 Membuat 3 file di dalam direktori postgresql/src:<br>
 
-<img src="postgresql/src/img/struktur-folder.png" width="700"> <br>
+<img width="239" height="219" alt="docker-compose" src="https://github.com/user-attachments/assets/a3e822d7-c72d-4551-b14f-b4629380c507" />
+
 
 Pembahasan : <br>
 
