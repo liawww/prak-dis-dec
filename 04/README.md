@@ -42,7 +42,8 @@ Membuat dua server PostgreSQL 18 yang saling terhubung, yaitu primary dan replic
 ## 4.1.1 Prasyarat
 Memastikan Docker dan Docker Compose sudah terpasang serta layanan Docker sudah aktif:<br>
 
-<!-- FOTO: screenshot docker --version dan docker compose version -->
+<img width="393" height="125" alt="pg-00-prasyarat" src="https://github.com/user-attachments/assets/8ec6e52f-ae31-4d4f-a980-c60552ca1041" />
+
 
 <img src="postgresql/src/img/prasyarat-docker.png" width="700"> <br>
 
