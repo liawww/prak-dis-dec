@@ -239,8 +239,10 @@ SELECT pg_is_in_recovery();
 SELECT pg_promote();
 SELECT pg_is_in_recovery();
 ```
+<img width="624" height="173" alt="pg_stat_replication" src="https://github.com/user-attachments/assets/ce3520d2-02b5-4e91-b000-3ac62c993751" />
 
-<img width="822" height="372" alt="pg-12-pg-promote" src="https://github.com/user-attachments/assets/ba39f1ad-63e5-47b7-afa7-9a8f26c4ac3a" />
+<img width="628" height="179" alt="pg_promote()" src="https://github.com/user-attachments/assets/68010c5a-90c9-4c35-892f-bca8785d01f6" />
+
 
 **Mematikan semua server.** Terakhir, primary dan replica dimatikan dengan `dcd`, lalu `dps` dijalankan untuk memastikan sudah tidak ada container yang berjalan.
 
