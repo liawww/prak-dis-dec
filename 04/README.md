@@ -256,7 +256,13 @@ sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}
 ping <IP>
 ```
 
-📸 `img/ig-01-dcu.png`, `img/ig-02-dps.png`, `img/ig-03-ip-ping.png`
+<img width="1103" height="173" alt="pg-01-dcu" src="https://github.com/user-attachments/assets/ef172af6-2019-46aa-a403-8adc2ddae913" />
+
+<img width="1095" height="94" alt="pg-02-dps" src="https://github.com/user-attachments/assets/72cc458a-cac8-4d4f-badc-0ee2986b5719" />
+
+<img width="1091" height="412" alt="pg-03-dlr" src="https://github.com/user-attachments/assets/045699d0-6cc2-4390-b061-d1122ec2ea66" />
+
+
 
 ## 2.4 Inisialisasi Cluster
 
@@ -273,7 +279,8 @@ Hasil yang diharapkan: `status: active`, `nodes: 3`.
 - `--metastorage-group` dan CMG: node-node yang menyimpan metadata cluster. Semua 3 node dilibatkan supaya tahan jika 1 node mati.
 - Inisialisasi hanya dilakukan **sekali**. Jika keluar CLI (Ctrl-D) lalu masuk lagi, tidak perlu init ulang.
 
-📸 `img/ig-04-cluster-init.png`
+<img width="1063" height="452" alt="pg-04-stat-replication" src="https://github.com/user-attachments/assets/d4658933-0a24-4ee9-b85e-6d1e28ec9944" />
+
 
 ## 2.5 Eksekusi SQL
 
@@ -293,8 +300,13 @@ Lihat tabel yang terbentuk:
 sql
 SELECT * FROM system.tables WHERE schema = 'PUBLIC';
 ```
+<img width="909" height="379" alt="pg-05-replication-slots" src="https://github.com/user-attachments/assets/d73dca48-3bf0-4463-b665-17b189802765" />
 
-📸 `img/ig-05-schema.png`, `img/ig-06-system-tables.png`, `img/ig-07-load-data.png`
+<img width="634" height="169" alt="pg-06-replica-recovery" src="https://github.com/user-attachments/assets/3a80a64d-b589-4847-b586-970c0fc2941a" />
+
+<img width="658" height="110" alt="pg-07-before-table" src="https://github.com/user-attachments/assets/750bcfc9-bc2a-4424-be78-68219ccf978f" />
+
+
 
 ## 2.6 Verifikasi Replikasi di Node Lain
 
@@ -325,7 +337,12 @@ ORDER BY YearMonth DESC;
 
 Ulangi untuk node3 (`connect http://localhost:10302`).
 
-📸 `img/ig-08-node2-tables.png`, `img/ig-09-node2-query.png`, `img/ig-10-node3-query.png`
+<img width="747" height="201" alt="pg-08-insert-primary" src="https://github.com/user-attachments/assets/352a7f17-c201-4a33-bd16-8929b8b57504" />
+
+<img width="606" height="201" alt="pg-09-verify-replica" src="https://github.com/user-attachments/assets/dab2d107-9550-4460-b22a-39e01ea6803e" />
+
+<img width="354" height="52" alt="pg-10-read-only" src="https://github.com/user-attachments/assets/23515e8a-f725-4464-b1ca-5f672240da5c" />
+
 
 **Analisis:** data dimasukkan hanya lewat node1, tetapi node2 dan node3 menghasilkan data dan hasil query yang sama persis. Artinya data sudah direplikasi ke seluruh node dalam cluster, sehingga replikasi Master-Master berhasil.
 
@@ -333,7 +350,8 @@ Matikan semua node:
 ```bash
 dcd
 ```
-📸 `img/ig-11-dcd.png`
+<img width="1090" height="93" alt="pg-11-final-status" src="https://github.com/user-attachments/assets/6e8e0ee9-5d76-4975-b891-5ecc1e7d898f" />
+
 
 ---
 
