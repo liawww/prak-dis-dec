@@ -163,7 +163,7 @@ SELECT * FROM pg_stat_replication;
 
 Hasilnya menunjukkan `usename` bernilai `replicator`, `state` bernilai `streaming`, dan `sync_state` bernilai `async`, artinya replikasi berjalan secara asinkron. Nilai `sent_lsn`, `write_lsn`, `flush_lsn`, dan `replay_lsn` sama, yang berarti replica tidak tertinggal dari primary.
 
-<img width="977" height="631" alt="pg-04-stat-replication" src="https://github.com/user-attachments/assets/1803d07a-6579-4b34-a100-51b039def8f7" />
+<img width="1096" height="186" alt="pg-08-primary-stat-replication" src="https://github.com/user-attachments/assets/61137c2d-8c83-4f6d-a07d-0d66afbbc1c8" />
 
 Selanjutnya lihat `pg_replication_slots`.
 
@@ -173,7 +173,7 @@ SELECT * FROM pg_replication_slots;
 
 Terlihat slot `replication_slot` dengan `slot_type` bernilai `physical` dan `active` bernilai `t`, jadi slot sedang dipakai oleh replica.
 
-<img width="391" height="441" alt="pg-05-replication-slots" src="https://github.com/user-attachments/assets/aae3c5bd-2b3e-48a3-8239-325214c90a8d" />
+<img width="1096" height="158" alt="pg-09-primary-replication-slots" src="https://github.com/user-attachments/assets/59d21dcb-0c70-41e8-b03c-125e8abf8ed5" />
 
 Pada server replica, masuk ke container replica dan cek statusnya.
 
@@ -188,9 +188,9 @@ SELECT pg_is_in_recovery();
 
 Hasil `t` (true) menunjukkan bahwa server tersebut adalah replica atau standby yang hanya mereplikasi data dan menyediakan akses baca.
 
-<img width="612" height="106" alt="pg-06-primary-before-table" src="https://github.com/user-attachments/assets/196920d4-4138-406b-b102-7da279977ceb" />
-
 Untuk melihat efek replikasi, saya membuat tabel lalu mengisinya di primary, setelah itu melihat kondisi di replica.
+
+<img width="612" height="106" alt="pg-06-primary-before-table" src="https://github.com/user-attachments/assets/196920d4-4138-406b-b102-7da279977ceb" />
 
 **Sebelum pembuatan tabel.** `\dt` dijalankan di primary dan di replica, keduanya menampilkan `Did not find any tables.` karena belum ada tabel.
 
@@ -208,9 +208,11 @@ INSERT INTO testrep (first, second) VALUES (21, 'Test pertama');
 INSERT INTO testrep (first, second) VALUES (23, 'Test ke dua');
 SELECT * FROM testrep;
 ```
+**Berikut adalah hasil pengecekan status replikasi dan slot replikasi pada server primary:**
+
 <img width="1096" height="186" alt="pg-08-primary-stat-replication" src="https://github.com/user-attachments/assets/61137c2d-8c83-4f6d-a07d-0d66afbbc1c8" />
 
-<img width="1096" height="158" alt="pg-09-primary-replication-slots" src="https://github.com/user-attachments/assets/59d21dcb-0c70-41e8-b03c-125e8abf8ed5" /> <br>
+<img width="1096" height="158" alt="pg-09-primary-replication-slots" src="https://github.com/user-attachments/assets/59d21dcb-0c70-41e8-b03c-125e8abf8ed5" /> 
 
 
 <img width="630" height="292" alt="pg-08-primary-insert" src="https://github.com/user-attachments/assets/af83263e-f26a-4ad8-b153-95d639ae45ae" />
