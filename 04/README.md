@@ -194,7 +194,11 @@ Untuk melihat efek replikasi, saya membuat tabel lalu mengisinya di primary, set
 
 **Sebelum pembuatan tabel.** `\dt` dijalankan di primary dan di replica, keduanya menampilkan `Did not find any tables.` karena belum ada tabel.
 
-<img width="573" height="118" alt="pg-07-replica-before-table" src="https://github.com/user-attachments/assets/666bf2a0-d514-473f-8ee1-b127fa005deb" />
+<img width="635" height="114" alt="pg-07-replica-before-table" src="https://github.com/user-attachments/assets/6fae6054-9d45-454e-a607-ba69e9b21a03" />
+
+<img width="698" height="142" alt="pg-07-primary-before-table" src="https://github.com/user-attachments/assets/93169d14-2167-4472-b664-ba44116d2cb3" />
+
+
 
 **Manipulasi data pada primary.** Saya membuat tabel `testrep`, mengisi dua baris data, lalu menampilkannya.
 
