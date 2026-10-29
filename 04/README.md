@@ -341,6 +341,8 @@ Ulangi untuk node3 (`connect http://localhost:10302`).
 
 <img width="606" height="201" alt="pg-09-verify-replica" src="https://github.com/user-attachments/assets/dab2d107-9550-4460-b22a-39e01ea6803e" />
 
+
+
 <img width="354" height="52" alt="pg-10-read-only" src="https://github.com/user-attachments/assets/23515e8a-f725-4464-b1ca-5f672240da5c" />
 
 
