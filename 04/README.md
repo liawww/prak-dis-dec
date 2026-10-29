@@ -208,6 +208,10 @@ INSERT INTO testrep (first, second) VALUES (21, 'Test pertama');
 INSERT INTO testrep (first, second) VALUES (23, 'Test ke dua');
 SELECT * FROM testrep;
 ```
+<img width="1096" height="186" alt="pg-08-primary-stat-replication" src="https://github.com/user-attachments/assets/61137c2d-8c83-4f6d-a07d-0d66afbbc1c8" />
+
+<img width="1096" height="158" alt="pg-09-primary-replication-slots" src="https://github.com/user-attachments/assets/59d21dcb-0c70-41e8-b03c-125e8abf8ed5" /> <br>
+
 
 <img width="630" height="292" alt="pg-08-primary-insert" src="https://github.com/user-attachments/assets/af83263e-f26a-4ad8-b153-95d639ae45ae" />
 
