@@ -7,113 +7,58 @@ NIM : 255410019
 Prodi : IF 1
 
 ---
+**TUJUAN**
+Memahami cara kerja streaming replication pada PostgreSQL.
+Menjalankan server primary dan replica PostgreSQL 18 menggunakan Docker Compose.
+Menguji bahwa perubahan data di primary otomatis muncul di replica.
+Memahami konsep High Availability (HA) dengan mempromosikan replica menjadi primary.
+Mengonfigurasi dan menginisialisasi cluster Apache Ignite 3.1.0 dengan tiga node.
+Menguji replikasi Master-Master dengan menjalankan perintah SQL dan memeriksa datanya di setiap node.
+DASAR TEORI
+**1. Replikasi dan Konsistensi Data**
+
+Replikasi adalah proses menyalin data dari satu server ke server lain supaya data tetap tersedia walaupun salah satu server bermasalah. Tantangan utamanya adalah menjaga konsistensi, yaitu memastikan semua salinan data memiliki isi yang sama atau setidaknya segera menjadi sama.
+
+**2. Streaming Replication PostgreSQL**
+
+Pada streaming replication, server primary mengirim catatan WAL (Write-Ahead Log) ke server replica secara terus-menerus melalui koneksi jaringan. Replica memutar ulang catatan tersebut sehingga datanya mengikuti primary. Primary menerima operasi baca dan tulis, sedangkan replica hanya melayani pembacaan (hot standby). Pada praktikum ini replikasi berjalan secara asinkron, artinya primary tidak menunggu konfirmasi replica sebelum menyelesaikan transaksi. Replication slot dipakai agar primary tidak menghapus WAL yang belum diterima replica.
+
+**3. High Availability (HA)**
+
+High Availability adalah upaya menjaga layanan tetap tersedia ketika terjadi gangguan. Pada PostgreSQL, jika primary mati maka replica dapat dipromosikan menjadi primary baru dengan fungsi pg_promote().
+
+**4. Replikasi Master-Master Apache Ignite**
+
+Apache Ignite 3 membentuk cluster dari beberapa node, dan data dikelola serta direplikasi antar node menggunakan protokol konsensus Raft. Dari sisi pengguna, koneksi ke node mana pun dapat dipakai untuk membaca dan menulis, sehingga modelnya sering disebut Master-Master.
+
+**5. Docker dan Docker Compose**
+
+Docker menjalankan aplikasi di dalam container yang terisolasi, sedangkan Docker Compose mengatur beberapa container sekaligus lewat satu file konfigurasi. Keduanya dipakai untuk menjalankan PostgreSQL dan Apache Ignite pada praktikum ini.
 
 # 4.1 Streaming Replication Menggunakan PostgreSQL
 
-Pada bagian ini saya mengonfigurasi *streaming replication* di PostgreSQL 18 menggunakan Docker Compose. Prinsipnya sama seperti versi PostgreSQL sebelumnya, hanya saja direktori data tidak lagi berada di `/var/lib/postgresql/data` tetapi di `/var/lib/postgresql/18/docker`. Ada dua server yang dijalankan: satu server *primary* yang menerima operasi baca dan tulis, dan satu server *replica* (*standby*) yang terus menyalin data dari primary lewat pengiriman WAL (*Write-Ahead Log*) sehingga isinya selalu sama dengan primary.
+Membuat dua server PostgreSQL 18 yang saling terhubung, yaitu primary dan replica. Setiap perubahan data di primary akan direplikasi ke replica.<br>
 
 ## 4.1.1 Prasyarat
+Memastikan Docker dan Docker Compose sudah terpasang serta layanan Docker sudah aktif:<br>
 
-Sebelum mengerjakan, hal yang perlu sudah tersedia adalah sebagai berikut.
+<!-- FOTO: screenshot docker --version dan docker compose version -->
 
-1. Docker sudah terpasang.
-2. Docker Compose sudah terpasang.
-3. Daemon `dockerd` sudah aktif.
-4. Petunjuk modul memakai Linux, jadi kalau memakai sistem operasi lain perlu ada penyesuaian seperlunya.
+<img src="postgresql/src/img/prasyarat-docker.png" width="700"> <br>
+
+Pembahasan : <br>
+
+Sebelum mengonfigurasi replikasi, dipastikan dulu bahwa Docker dan Docker Compose sudah terpasang dan daemon dockerd sudah berjalan. Pengecekan dilakukan dengan docker --version dan docker compose version. Petunjuk modul memakai Linux, jadi pada sistem operasi lain perlu penyesuaian seperlunya. <br>
 
 ## 4.1.2 Struktur Direktori dan File
 
-Ada satu direktori yang berisi tiga file, yaitu `00_init.sql`, `docker-compose.yaml`, dan `env.sh`. Di repo ini direktorinya bernama `src` dan berada di dalam folder `postgresql`.
+Membuat 3 file di dalam direktori postgresql/src:<br>
 
-```
-postgresql/
-└── src/
-    ├── 00_init.sql
-    ├── docker-compose.yaml
-    └── env.sh
-```
+<img src="postgresql/src/img/struktur-folder.png" width="700"> <br>
 
-**00_init.sql** berisi perintah SQL yang dijalankan otomatis ketika server primary pertama kali diinisialisasi. Fungsinya membuat user yang dipakai untuk replikasi dan membuat slot replikasinya.
+Pembahasan : <br>
 
-```sql
-CREATE USER replicator WITH REPLICATION ENCRYPTED PASSWORD 'replicator_password';
-SELECT pg_create_physical_replication_slot('replication_slot');
-```
-
-Baris pertama membuat user `replicator` dengan hak `REPLICATION`, yang nantinya dipakai replica untuk menarik data dari primary. Baris kedua membuat *physical replication slot* bernama `replication_slot` supaya primary tidak menghapus WAL yang belum diterima oleh replica.
-
-**docker-compose.yaml** adalah konfigurasi yang dijalankan oleh `docker-compose`.
-
-```yaml
-x-postgres-common:
-  &postgres-common
-  image: postgres:18.3-alpine3.23
-  user: postgres
-  restart: always
-  healthcheck:
-    test: 'pg_isready -U zuser --dbname=zdb'
-    interval: 10s
-    timeout: 5s
-    retries: 5
-
-services:
-  postgres_primary:
-    <<: *postgres-common
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: zuser
-      POSTGRES_DB: zdb
-      POSTGRES_PASSWORD: zpass
-      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256\nhost replication replicator 0.0.0.0/0 md5"
-      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
-    command: |
-      postgres
-      -c wal_level=replica
-      -c hot_standby=on
-      -c max_wal_senders=10
-      -c max_replication_slots=10
-      -c hot_standby_feedback=on
-    volumes:
-      - ./00_init.sql:/docker-entrypoint-initdb.d/00_init.sql
-
-  postgres_replica:
-    <<: *postgres-common
-    ports:
-      - 5433:5432
-    environment:
-      PGUSER: replicator
-      PGPASSWORD: replicator_password
-      PGDATA: /var/lib/postgresql/18/docker
-    command: |
-      bash -c "
-      until pg_basebackup --pgdata=/var/lib/postgresql/18/docker -R --slot=replication_slot --host=postgres_primary --port=5432 -X stream; do
-        echo 'pg_basebackup failed. Retrying in 5 seconds ...'
-        sleep 5
-      done
-      echo 'Backup done, starting replica...'
-      chmod 0700 /var/lib/postgresql/18/docker
-      postgres
-      "
-    depends_on:
-      - postgres_primary
-```
-
-Bagian `x-postgres-common` adalah template yang dipakai bersama oleh kedua service, isinya image `postgres:18.3-alpine3.23`, user `postgres`, kebijakan `restart: always`, dan *healthcheck* memakai `pg_isready`. Service `postgres_primary` berjalan di port 5432 dengan user `zuser`, database `zdb`, dan password `zpass`. Pengaturan `POSTGRES_HOST_AUTH_METHOD` mengatur `pg_hba.conf` agar koneksi biasa memakai `scram-sha-256` dan user `replicator` boleh melakukan koneksi replikasi. Pada `command` primary ada beberapa parameter, yaitu `wal_level=replica`, `hot_standby=on`, `max_wal_senders=10`, `max_replication_slots=10`, dan `hot_standby_feedback=on`. Service `postgres_replica` berjalan di port host 5433 yang diarahkan ke port 5432 container, memakai `PGUSER=replicator`, dan menyimpan data di `/var/lib/postgresql/18/docker`. Perintahnya menjalankan `pg_basebackup` ke primary dan mengulang tiap 5 detik sampai berhasil, lalu mengubah izin direktori data menjadi `0700`, kemudian menjalankan `postgres`. Opsi `-R` membuat file `standby.signal` dan `primary_conninfo` secara otomatis. Replica baru dijalankan setelah primary karena ada `depends_on`.
-
-**env.sh** berisi alias shell untuk mempersingkat penulisan perintah, sifatnya opsional. Nama container diawali dengan nama direktori, karena file disimpan di direktori `src` maka nama containernya menjadi `src-postgres_primary-1` dan `src-postgres_replica-1`.
-
-```bash
-alias dcu="sudo docker-compose up -d"
-alias dcd="sudo docker-compose down"
-alias dps="sudo docker ps"
-alias der="sudo docker exec -it src-postgres_replica-1 bash"
-alias dep="sudo docker exec -it src-postgres_primary-1 bash"
-alias dlr="sudo docker logs src-postgres_replica-1"
-alias dlp="sudo docker logs src-postgres_primary-1"
-```
-
-`docker-compose up` dipakai untuk mengaktifkan beberapa container sekaligus berdasarkan `docker-compose.yaml`, `docker-compose down` untuk mematikannya, `docker ps` untuk melihat daftar container, `docker exec` untuk menjalankan proses (dalam hal ini bash) di container yang sedang berjalan, dan `docker logs` untuk menampilkan log container.
+Pada tahap ini disiapkan tiga berkas utama untuk streaming replication. Berkas 00_init.sql dijalankan otomatis saat primary pertama kali dibuat, isinya membuat user replicator yang berhak melakukan replikasi dan physical replication slot bernama replication_slot. Berkas docker-compose.yaml mendefinisikan dua service dengan image postgres:18.3-alpine3.23. Service postgres_primary berjalan di port 5432 dengan user zuser, database zdb, dan konfigurasi WAL seperti wal_level=replica, hot_standby=on, dan max_wal_senders=10, serta mengizinkan user replicator untuk koneksi replikasi. Service postgres_replica berjalan di port host 5433 dan menjalankan pg_basebackup ke primary, diulang tiap 5 detik sampai berhasil. Opsi -R pada perintah itu membuat standby.signal dan primary_conninfo otomatis sehingga server langsung berjalan sebagai standby. Berkas ketiga, env.sh, berisi alias seperti dcu, dcd, dps, dep, der, dlp, dan dlr supaya perintah Docker lebih singkat. Nama container diawali nama direktori, karena direktorinya src maka namanya src-postgres_primary-1 dan src-postgres_replica-1. <br>
 
 ## 4.1.3 Menjalankan docker-compose
 
@@ -125,25 +70,19 @@ source env.sh
 dcu
 ```
 
-<img width="949" height="104" alt="pg-01-dcu" src="https://github.com/user-attachments/assets/2fef3bef-5da3-447c-997b-a4c0c608a1d3" />
+<img src="https://github.com/user-attachments/assets/2fef3bef-5da3-447c-997b-a4c0c608a1d3" width="700"> <br>
 
-Setelah itu saya cek dengan `dps`. Yang diperhatikan terutama kolom STATUS, kalau berjalan dengan baik akan muncul `healthy`.
+Kemudian periksa status container:<br>
 
-```bash
-dps
-```
+<img src="https://github.com/user-attachments/assets/4300803b-debe-4e5a-b60a-2044b1a490a2" width="700"> <br>
 
-<img width="948" height="260" alt="pg-02-dps-healthy" src="https://github.com/user-attachments/assets/4300803b-debe-4e5a-b60a-2044b1a490a2" />
+Periksa juga log replica:<br>
 
-Kalau belum `healthy`, penyebabnya bisa dilacak lewat log dengan `dlp` untuk primary dan `dlr` untuk replica. Pada log replica terlihat pesan `pg_basebackup failed. Retrying in 5 seconds ...` di awal, ini wajar karena primary belum siap menerima koneksi. Setelah primary siap, muncul `Backup done, starting replica...` dan replica mulai melakukan streaming WAL dari primary.
+<img src="https://github.com/user-attachments/assets/9ded38fb-e0dd-45cb-8a2c-66fc31a98907" width="700"> <br>
 
-```bash
-dlr
-```
+Pembahasan : <br>
 
-<img width="722" height="573" alt="pg-03-log-replica" src="https://github.com/user-attachments/assets/9ded38fb-e0dd-45cb-8a2c-66fc31a98907" />
-
-Pada titik ini sudah ada dua instance PostgreSQL 18.3, yaitu `src-postgres_primary-1` sebagai server utama yang menerima operasi *read-write*, dan `src-postgres_replica-1` sebagai *standby* yang menyinkronkan datanya dengan server utama. Semua operasi penulisan dan manipulasi data di server utama akan direplikasi ke replica.
+Perintah dcu menjalankan dua container, yaitu src-postgres_primary-1 dan src-postgres_replica-1. Pada hasil docker ps, kolom STATUS awalnya masih health: starting, lalu berubah menjadi healthy setelah beberapa saat, artinya kedua server sudah lolos pengecekan pg_isready. Pada log replica terlihat pesan pg_basebackup failed. Retrying in 5 seconds ... di awal. Ini wajar karena primary belum siap menerima koneksi. Setelah primary siap muncul Backup done, starting replica..., lalu log menunjukkan replica masuk ke standby mode dan started streaming WAL from primary. Dengan begitu replica sudah mulai menerima WAL dari primary. <br>
 
 ## 4.1.4 Pengujian
 
@@ -238,6 +177,10 @@ sudo docker-compose stop postgres_primary
 
 <img width="721" height="84" alt="pg-11-stop-primary" src="https://github.com/user-attachments/assets/d4a574b9-a13b-4c4e-9cad-327da8be0e44" />
 
+Pembahasan : <br>
+
+Container primary dihentikan untuk mensimulasikan primary yang mengalami gangguan. Pada kondisi ini tidak ada server yang bisa menerima operasi tulis, sehingga replica perlu dipromosikan. <br> 
+
 **Mempromosikan replica.** Setelah primary diketahui mati, replica dipromosikan menjadi primary, dari yang awalnya hanya bisa dibaca menjadi bisa dibaca dan ditulis. Di `psql` pada replica, `pg_is_in_recovery()` pertama kali bernilai `t`, lalu `pg_promote()` dijalankan dan hasilnya `t`, kemudian `pg_is_in_recovery()` dicek lagi dan sekarang bernilai `f`. Nilai `f` berarti server sudah keluar dari mode recovery dan berperan sebagai primary.
 
 ```sql
@@ -249,6 +192,9 @@ SELECT pg_is_in_recovery();
 
 <img width="628" height="179" alt="pg_promote()" src="https://github.com/user-attachments/assets/68010c5a-90c9-4c35-892f-bca8785d01f6" />
 
+Pembahasan : <br>
+
+Sebelum promosi, pg_is_in_recovery() bernilai t yang berarti server masih replica. Setelah pg_promote() dijalankan dan mengembalikan t, pengecekan berikutnya bernilai f. Nilai f menunjukkan server sudah keluar dari mode recovery dan kini berperan sebagai primary yang dapat membaca dan menulis. <br>
 
 **Mematikan semua server.** Terakhir, primary dan replica dimatikan dengan `dcd`, lalu `dps` dijalankan untuk memastikan sudah tidak ada container yang berjalan.
 
@@ -259,11 +205,14 @@ dps
 
 <img width="553" height="140" alt="pg-13-dcd" src="https://github.com/user-attachments/assets/0e7e21cc-4def-410c-9eac-971f1c036244" />
 
+Pembahasan : <br>
+
+Perintah dcd menghapus kedua container dan network, dan dps yang kosong memastikan sudah tidak ada container yang berjalan. <br>
 ---
 
 # 4.2 Replikasi Master-Master Menggunakan Apache Ignite
 
-Pada bagian ini saya mengonfigurasi *cluster* Apache Ignite 3 menggunakan Apache Ignite 3.1.0. Mode replikasi ini sering disebut Master-Master karena semua node bisa berperan sebagai primary, artinya bisa dipakai untuk membaca maupun menulis. Perubahan yang dilakukan di satu node akan terlihat di node lainnya dalam satu cluster.
+Membuat cluster Apache Ignite 3.1.0 dengan tiga node. Semua node dapat dipakai untuk membaca dan menulis, dan perubahan di satu node akan terlihat di node lain.<br>
 
 ## 4.2.1 Prasyarat
 
@@ -273,42 +222,24 @@ Prasyaratnya sama dengan bagian sebelumnya.
 2. Docker Compose sudah terpasang.
 3. Daemon `dockerd` sudah aktif.
 4. Petunjuk modul memakai Linux, jadi kalau memakai sistem operasi lain perlu ada penyesuaian seperlunya.
+   
+<img src="postgresql/src/img/prasyarat-docker.png" width="700"> <br>
+Pembahasan : <br>
+
+Kebutuhan lingkungan sama seperti sebelumnya, sehingga cukup dipastikan Docker dan Docker Compose masih dapat dipakai dan layanan Docker dalam keadaan aktif. <br>
 
 ## 4.2.2 Struktur Direktori dan File
 
-Untuk bagian ini hanya diperlukan satu file `docker-compose.yaml` dan sekumpulan file perintah SQL yang diperoleh dari dokumentasi Apache Ignite (halaman *explore SQL*). Selain itu ada `env.sh` untuk shortcut perintah. Di repo ini semuanya ada di `ignite/src`.
+Menyiapkan direktori ignite/src berisi docker-compose.yaml, folder sql, dan env.sh:<br>
 
-```
-ignite/
-└── src/
-    ├── docker-compose.yaml
-    ├── env.sh
-    └── sql/
-        ├── schema.sql
-        ├── current_catalog.sql
-        ├── media_and_genre.sql
-        ├── tracks.sql
-        ├── ee_and_cust.sql
-        └── invoices.sql
-```
+<img src="ignite/src/img/struktur-folder.png" width="700"> <br>
 
-`docker-compose.yaml` menjalankan tiga node (`node1`, `node2`, `node3`) dari image `apacheignite/ignite:3.1.0`, masing-masing dengan memori JVM 4 GB. Konfigurasi jaringannya memakai port klaster 3344 dan `nodeFinder` berisi ketiga node supaya saling menemukan.
+Pembahasan : <br>
 
-Folder `sql` berisi skema dan data contoh database musik Chinook, yaitu `schema.sql`, `current_catalog.sql`, `media_and_genre.sql`, `tracks.sql`, `ee_and_cust.sql`, dan `invoices.sql`.
-
-`env.sh` berisi alias berikut.
-
-```bash
-alias dcu="sudo docker-compose up -d"
-alias dcd="sudo docker-compose down"
-alias dps="sudo docker ps"
-alias dclm="sudo docker run --rm -it --network=host -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 -v ./sql:/opt/ignite/sql apacheignite/ignite:3.1.0 cli"
-alias dcli="sudo docker run --rm -it --network=host -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 apacheignite/ignite:3.1.0 cli"
-```
-
-`dcu`, `dcd`, dan `dps` fungsinya sama seperti di bagian PostgreSQL. `dcli` menjalankan Ignite CLI di dalam container, sedangkan `dclm` sama seperti `dcli` tetapi folder `./sql` di komputer lokal di-*mount* ke `/opt/ignite/sql` di container supaya file SQL bisa dieksekusi dari CLI.
+Bagian ini hanya memerlukan satu berkas docker-compose.yaml dan kumpulan file SQL dari dokumentasi Apache Ignite. Berkas compose menjalankan tiga node (node1, node2, node3) dari image apacheignite/ignite:3.1.0, dengan port klaster 3344 dan nodeFinder berisi ketiga node supaya saling menemukan. Folder sql berisi skema dan data contoh database musik Chinook, yaitu schema.sql, current_catalog.sql, media_and_genre.sql, tracks.sql, ee_and_cust.sql, dan invoices.sql. Berkas env.sh berisi alias dcu, dcd, dan dps seperti sebelumnya, ditambah dcli yang menjalankan Ignite CLI di container, dan dclm yang sama seperti dcli tetapi me-mount folder ./sql ke /opt/ignite/sql agar file SQL bisa dibaca dari dalam container. <br>
 
 ## 4.2.3 Menjalankan docker-compose
+**1. Menjalankan Cluster**
 
 Dari direktori `ignite/src`, alias dimuat dengan `source env.sh` lalu cluster dijalankan dengan `dcu`. Saat pertama kali, image Apache Ignite diambil dulu dari DockerHub, kemudian network dan ketiga container (`node1`, `node2`, `node3`) dibuat dan dijalankan.
 
@@ -320,24 +251,25 @@ dcu
 
 <img width="1103" height="173" alt="ignite-01-dcu" src="https://github.com/user-attachments/assets/ef172af6-2019-46aa-a403-8adc2ddae913" />
 
+**2. Memeriksa Status Container**
+
 Setelah itu `dps` dipakai untuk memastikan ketiga node sudah berjalan.
 
 ```bash
 dps
 ```
-
-<img width="1095" height="94" alt="ignite-02-dps" src="https://github.com/user-attachments/assets/72cc458a-cac8-4d4f-badc-0ee2986b5719" />
-
-Dari ketiga node tersebut ada port yang bisa dipakai. Port 10300 sampai 10302 adalah REST API untuk operasi administratif, yaitu `http://localhost:10300` untuk node1, `http://localhost:10301` untuk node2, dan `http://localhost:10302` untuk node3. Port-port ini bisa langsung dihubungkan saat menjalankan Ignite CLI. Port 10800 sampai 10802 dipakai untuk koneksi dari aplikasi.
-
-Alamat IP masing-masing node bisa diketahui dengan perintah `docker inspect`, lalu konektivitasnya dicek memakai `ping`.
-
+**3. Memeriksa IP Address Masing-Masing Node**
 ```bash
 sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <CONTAINER ID>
 ping <IP>
 ```
 
 <img width="1091" height="412" alt="ignite-03-inspect-ping" src="https://github.com/user-attachments/assets/045699d0-6cc2-4390-b061-d1122ec2ea66" />
+
+Pembahasan : <br>
+
+Perintah dcu mengambil image Apache Ignite dari DockerHub lalu menjalankan tiga container node. Pada hasil dps, ketiganya berstatus aktif. Port 10300 sampai 10302 adalah REST API untuk administrasi (http://localhost:10300 untuk node1, 10301 untuk node2, dan 10302 untuk node3), sedangkan port 10800 sampai 10802 dipakai untuk koneksi aplikasi. Perintah docker inspect menampilkan alamat IP tiap node di jaringan Docker, dan ping dipakai untuk memastikan ketiganya bisa dijangkau. <br>
+
 
 ## 4.2.4 Inisialisasi Cluster
 
@@ -348,14 +280,14 @@ dcli
 cluster init --name=ignite3 --metastorage-group=node1,node2,node3
 cluster status
 ```
-
-Hasil `cluster status` menunjukkan cluster bernama `ignite3` dengan 3 node dan status `active`, serta ketiga node ikut menjadi anggota CMG dan metastorage. Opsi `--metastorage-group` diisi ketiga node supaya metadata cluster tetap aman kalau satu node mati. Inisialisasi hanya perlu dilakukan sekali. Kalau keluar dari CLI dengan Ctrl-D lalu masuk lagi dengan perintah yang sama, tidak perlu inisialisasi ulang.
-
 <img width="1063" height="452" alt="ignite-04-cluster-init" src="https://github.com/user-attachments/assets/d4658933-0a24-4ee9-b85e-6d1e28ec9944" />
 
-Pada kondisi ini CLI sudah terhubung ke `http://localhost:10300`, dan semua yang dikerjakan di node ini akan direplikasi ke node lain dalam satu cluster.
+Pembahasan : <br>
+
+CLI terhubung ke node default http://localhost:10300. Perintah cluster init membuat cluster bernama ignite3 dengan ketiga node sebagai anggota metastorage group, supaya metadata cluster tetap aman bila satu node mati. Perintah cluster status kemudian menunjukkan cluster berstatus active dengan 3 node. Inisialisasi hanya perlu dilakukan sekali, jadi setelah keluar dari CLI dengan Ctrl-D dan masuk lagi, tidak perlu init ulang. <br>
 
 ## 4.2.5 Eksekusi Perintah-Perintah SQL
+**1. Eksekusi Skema dan Dataset di Node 1**
 
 File SQL perlu bisa diakses dari container, karena itu CLI dijalankan dengan `dclm` yang me-*mount* folder `sql`. Setelah terhubung ke `http://localhost:10300`, file SQL dieksekusi satu per satu.
 
@@ -372,6 +304,11 @@ sql --file=/opt/ignite/sql/invoices.sql
 
 <img width="634" height="169" alt="ignite-06-sql-files" src="https://github.com/user-attachments/assets/3a80a64d-b589-4847-b586-970c0fc2941a" />
 
+Pembahasan : <br>
+
+File schema.sql membuat tabel-tabel, lalu file lainnya mengisi data katalog, tracks, karyawan, pelanggan, dan invoice. Keluaran Updated ... rows menunjukkan jumlah baris yang berhasil dimasukkan oleh tiap perintah. Seluruh perintah ini hanya dijalankan di node1. <br>
+
+**2. Melihat Tabel yang Terbentuk**
 Kemudian masuk ke mode SQL dan lihat tabel yang sudah terbentuk.
 
 ```
@@ -381,6 +318,7 @@ SELECT * FROM system.tables WHERE schema = 'PUBLIC';
 
 <img width="658" height="110" alt="ignite-07-system-tables" src="https://github.com/user-attachments/assets/750bcfc9-bc2a-4424-be78-68219ccf978f" />
 
+**3. Verifikasi di Node 2**
 Untuk memeriksa apakah perubahan di `http://localhost:10300` sudah dipropagasi ke node lain, saya terhubung ke node2 di `http://localhost:10301`, lalu menjalankan query yang sama.
 
 ```
@@ -416,6 +354,7 @@ ORDER BY
 
 <img width="606" height="201" alt="ignite-09-query-node2" src="https://github.com/user-attachments/assets/dab2d107-9550-4460-b22a-39e01ea6803e" />
 
+**4. Verifikasi di Node 3**
 Hal yang sama dilakukan di node3 (`http://localhost:10302`).
 
 ```
@@ -423,7 +362,11 @@ connect http://localhost:10302
 ```
 
 <img width="354" height="52" alt="ignite-10-node3" src="https://github.com/user-attachments/assets/23515e8a-f725-4464-b1ca-5f672240da5c" />
+Pembahasan : <br>
 
+Data hanya dimasukkan lewat node1, tetapi saat terhubung ke node2 tabel-tabelnya sudah ada dan query analitik langsung bisa dijalankan. Hal yang sama dilakukan di node3. Hasil query di kedua node sama dengan data yang dimasukkan di node1. Dengan demikian data sudah direplikasi ke seluruh node dalam cluster, sehingga replikasi Master-Master pada Apache Ignite 3.1.0 berjalan. <br>
+
+**5. Mematikan Semua Node**
 Data hanya dimasukkan lewat node1, tetapi node2 dan node3 ternyata juga sudah berisi data dan memberi hasil query yang sama. Dengan demikian terlihat bahwa telah terjadi replikasi Master-Master pada cluster Apache Ignite 3.1.0.
 
 Terakhir, semua node dimatikan dengan `dcd`.
@@ -433,3 +376,7 @@ dcd
 ```
 
 <img width="1090" height="93" alt="ignite-11-dcd" src="https://github.com/user-attachments/assets/6e8e0ee9-5d76-4975-b891-5ecc1e7d898f" />
+
+Pembahasan : <br>
+
+Perintah dcd menghapus ketiga container node beserta network-nya sehingga praktikum selesai dan lingkungan kembali bersih. <br>
