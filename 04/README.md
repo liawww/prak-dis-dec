@@ -8,6 +8,7 @@ Prodi : IF 1
 
 ---
 **TUJUAN**
+
 Memahami cara kerja streaming replication pada PostgreSQL.
 Menjalankan server primary dan replica PostgreSQL 18 menggunakan Docker Compose.
 Menguji bahwa perubahan data di primary otomatis muncul di replica.
@@ -222,7 +223,7 @@ Prasyaratnya sama dengan bagian sebelumnya.
 3. Daemon `dockerd` sudah aktif.
 4. Petunjuk modul memakai Linux, jadi kalau memakai sistem operasi lain perlu ada penyesuaian seperlunya.
    
-<img width="700" alt="ignite-00-prasyarat" src="img/ignite-00-prasyarat.png" />
+<img width="691" height="469" alt="docker-install" src="https://github.com/user-attachments/assets/114be252-f55f-4efa-b433-b418a55de7fb" />
 Pembahasan : <br>
 
 Kebutuhan lingkungan sama seperti sebelumnya, sehingga cukup dipastikan Docker dan Docker Compose masih dapat dipakai dan layanan Docker dalam keadaan aktif. <br>
@@ -231,7 +232,8 @@ Kebutuhan lingkungan sama seperti sebelumnya, sehingga cukup dipastikan Docker d
 
 Menyiapkan direktori ignite/src berisi docker-compose.yaml, folder sql, dan env.sh:<br>
 
-<img src="ignite/src/img/struktur-folder.png" width="700"> <br>
+<img width="282" height="261" alt="struktur-folder" src="https://github.com/user-attachments/assets/211c1bc1-4a26-4662-93f8-0f8237fff084" />
+
 
 Pembahasan : <br>
 
