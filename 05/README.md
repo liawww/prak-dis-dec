@@ -76,10 +76,10 @@ source .venv/bin/activate
 uv pip install blacksheep blacksheep-cli
 ```
 **uv pip install blacksheep**
-
-
+<img src="img/01-install-blacksheep.png" width="700">
 
 **uv pip install blacksheep-cli**
+<img src="img/01-install-blacksheep-CLI.png" width="700">
 
 **Pembahasan: 
 1. **`mkdir workspace-05 && cd workspace-05`**: Membuat direktori kerja baru bernama `workspace-05` dan langsung berpindah ke dalam direktori tersebut.
@@ -92,7 +92,7 @@ uv pip install blacksheep blacksheep-cli
 ### 3.2 Membuat Aplikasi BlackSheep
 2. Pembuatan Aplikasi Web
 Setelah itu, buat aplikasi menggunakan cli:
-
+<img src="img/02-blacksheep-create.png" width="700">
 
 ```bash
 $ blacksheep create
@@ -102,7 +102,56 @@ $ cd blacksheep_lb
 $ uv pip install -r requirements.txt
 $ python dev.py
 ```
-Aplikasi berjalan di `http://localhost:44777`. Dockerfile bawaan BlackSheep membuka **port 80**, bukan 44777, dan hanya diubah pada versi Python (`3.14.4-slim`).
+
+**Pembahasan:**
+1. **`blacksheep create`**: Men-generate struktur awal project aplikasi web secara otomatis dengan template MVC dan fitur OpenAPI.
+2. **`cd blacksheep_lb`**: Masuk ke dalam direktori project `blacksheep_lb` yang baru saja dibuat.
+3. **`uv pip install -r requirements.txt`**: Mengunduh dan menginstal seluruh pustaka dependensi yang dibutuhkan oleh aplikasi ke dalam virtual environment.
+4. **`python dev.py`**: Menjalankan server lokal (Uvicorn) untuk pengujian awal pada port `44777`. Catatan: Pada Dockerfile bawaan project, port bawaan yang digunakan untuk container adalah port `80`.
+
+
+Pada tahap ini, dibuat kerangka aplikasi web berbasis ASGI menggunakan perkakas `blacksheep-cli` dengan arsitektur MVC (Model-View-Controller):
+<img src="img/02-running-dev.png" width="700">
+
+**Pembahasan:**
+1. **`python dev.py`**: Perintah ini dijalankan di dalam folder project `blacksheep_lb` untuk menyalakan server lokal pengembang berbasis kerangka kerja ASGI Uvicorn.
+2. **Log Berhasil (`Uvicorn running on http://localhost:44777`)**: Menandakan bahwa proses inisialisasi aplikasi web BlackSheep telah sukses, server siap berjalan, dan dapat diakses melalui browser pada port `44777`.
+
+
+Pastikan bahwa aplikasi tersebut bisa berjalan dengan baik:
+<img src="img/02-menjalankan-server.png" width="700">
+
+**pembahasan:**
+**Pembahasan:**
+
+1. **`python dev.py`**: Perintah ini dijalankan di dalam direktori `blacksheep_lb` untuk menyalakan server lokal pengembang (*development server*) berbasis ASGI Uvicorn.
+2. **Log Uvicorn**: Pesan `Uvicorn running on http://localhost:44777` menunjukkan bahwa aplikasi telah berhasil dijalankan dan siap diuji coba melalui browser.
+3. **`^C` (Shutting Down)**: Menandakan proses server dihentikan sementara dengan menekan kombinasi tombol `Ctrl + C` pada terminal setelah pengujian selesai.
+
+Akses ke http://localhost:44777 menggunakan browser:
+<img src="img/02-web-browser.png" width="700">
+
+**pembahasan:**
+**Akses Web Browser**: Saat alamat `http://localhost:44777` dibuka melalui web browser, aplikasi berhasil merender halaman utama berlatar hijau yang menandakan kerangka web framework ASGI BlackSheep berjalan dengan normal dan siap digunakan.
+
+Pada shell tempat kita mengaktifkan server, muncul:
+Pada shell/terminal tempat server dijalankan, muncul log HTTP request:
+
+<img src="img/02-server-log-request.png" width="700">
+
+**Pembahasan:**
+1. **HTTP GET Log**: Kemunculan status `200 OK` pada log terminal menandakan bahwa server aplikasi berhasil merespons dan mengirimkan halaman utama serta file-file statis (seperti CSS, JavaScript, dan gambar) ke browser pengguna tanpa kendala.
+2. **Kesiapan Containerization**: Sampai tahap ini, pembuatan aplikasi web BlackSheep secara lokal telah selesai dan struktur direktori `blacksheep_lb` sudah siap untuk masuk ke proses pembentukan citra Docker (*Docker image*) menggunakan `Dockerfile` bawaan.
+
+
+Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 12]. Ketika diperiksa, di dalam direktori `blacksheep_lb` sudah terdapat file `Dockerfile` bawaan.
+
+<img src="img/02-ls-la-dockerfile.png" width="700">
+
+**Pembahasan:**
+1. **Perintah `ls -la`**: Digunakan untuk menampilkan seluruh daftar berkas dan direktori (termasuk berkas tersembunyi) secara detail di dalam folder project `blacksheep_lb`.
+2. **Keberadaan `Dockerfile`**: Template BlackSheep secara otomatis menyediakan berkas `Dockerfile` dan `.dockerignore` untuk keperluan kontainerisasi aplikasi.
+3. **Catatan Port**: Secara default, `Dockerfile` bawaan BlackSheep membuka **port 80**, bukan port `44777` seperti pada saat pengembangan lokal[cite: 12]. Hal ini penting untuk diperhatikan dan disesuaikan nantinya saat menggunakan Docker Compose.
 
 ### 3.3 Struktur Direktori
 ```
