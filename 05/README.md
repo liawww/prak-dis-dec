@@ -199,6 +199,7 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 * **Perintah Eksekusi**: Menjalankan server ASGI Uvicorn via `CMD` untuk mengaktifkan aplikasi web BlackSheep secara otomatis saat kontainer berjalan.
 
 **env.sh**<br>
+
 <img src="img/03-env-sh-config.png" width="700"><br>
 
 
