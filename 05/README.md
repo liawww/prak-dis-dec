@@ -104,6 +104,7 @@ Pada tahap ini, dibuat kerangka aplikasi web berbasis ASGI menggunakan perkakas 
 <img src="img/02-running-dev.png" width="700"><br>
 
 **Pembahasan:**
+
 1. **`python dev.py`**: Perintah ini dijalankan di dalam folder project `blacksheep_lb` untuk menyalakan server lokal pengembang berbasis kerangka kerja ASGI Uvicorn.
 2. **Log Berhasil (`Uvicorn running on http://localhost:44777`)**: Menandakan bahwa proses inisialisasi aplikasi web BlackSheep telah sukses, server siap berjalan, dan dapat diakses melalui browser pada port `44777`.
 
@@ -121,7 +122,8 @@ Akses ke http://localhost:44777 menggunakan browser:<br>
 
 <img src="img/02-web-browser.png" width="700"><br>
 
-**pembahasan:**
+**Pembahasan:**
+
 **Akses Web Browser**: Saat alamat `http://localhost:44777` dibuka melalui web browser, aplikasi berhasil merender halaman utama berlatar hijau yang menandakan kerangka web framework ASGI BlackSheep berjalan dengan normal dan siap digunakan.
 
 Pada shell tempat kita mengaktifkan server, muncul:
