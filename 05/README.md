@@ -111,7 +111,6 @@ Pada tahap ini, dibuat kerangka aplikasi web berbasis ASGI menggunakan perkakas 
 Pastikan bahwa aplikasi tersebut bisa berjalan dengan baik:<br>
 <img src="img/02-menjalankan-server.png" width="700"><br>
 
-**pembahasan:**
 **Pembahasan:**
 
 1. **`python dev.py`**: Perintah ini dijalankan di dalam direktori `blacksheep_lb` untuk menyalakan server lokal pengembang (*development server*) berbasis ASGI Uvicorn.
@@ -179,7 +178,7 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat. Ketik
 2. **Layanan `nginx`**: Menjalankan kontainer Nginx sebagai *reverse proxy* dan memetakan port `44777` di mesin host ke port `80` pada kontainer.
 3. **`depends_on`**: Memastikan layanan Nginx baru akan berjalan setelah kontainer aplikasi (`app`) siap.
 
-*blacksheep_lb/Dockerfile*
+**blacksheep_lb/Dockerfile**
 <img src="img/03-blacksheep-dockerfile.png" width="700"><br>
 
 **Pembahasan:**
