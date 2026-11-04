@@ -71,7 +71,7 @@ uv pip install blacksheep blacksheep-cli
 **uv pip install blacksheep-cli**<br>
 <img src="img/01-install-blacksheep-CLI.png" width="700"><br>
 
-**Pembahasan: 
+**Pembahasan:**
 1. **`mkdir workspace-05 && cd workspace-05`**: Membuat direktori kerja baru bernama `workspace-05` dan langsung berpindah ke dalam direktori tersebut.
 2. **`uv venv`**: Membuat lingkungan virtual (*virtual environment*) Python terisolasi di dalam direktori `.venv` menggunakan tool `uv`.
 3. **`source .venv/bin/activate`**: Mengaktifkan virtual environment yang telah dibuat, ditandai dengan munculnya nama environment `(workspace-05)` pada prompt terminal.
