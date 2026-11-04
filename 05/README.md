@@ -112,7 +112,6 @@ Pastikan bahwa aplikasi tersebut bisa berjalan dengan baik:<br>
 <img src="img/02-menjalankan-server.png" width="700"><br>
 
 **pembahasan:**
-**Pembahasan:**
 
 1. **`python dev.py`**: Perintah ini dijalankan di dalam direktori `blacksheep_lb` untuk menyalakan server lokal pengembang (*development server*) berbasis ASGI Uvicorn.
 2. **Log Uvicorn**: Pesan `Uvicorn running on http://localhost:44777` menunjukkan bahwa aplikasi telah berhasil dijalankan dan siap diuji coba melalui browser.
@@ -188,18 +187,18 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 2. **Multi-Stage Build**: Konfigurasi kontainer dibagi menjadi dua tahap (menggunakan `AS server_builder` dan base image slim) untuk memastikan dependensi instalasi yang besar terpisah dari lingkungan runtime utama, sehingga ukuran image akhir lebih efisien.
 3. **Eksekusi Aplikasi**: Mengatur lingkungan virtual Python, membuka port `80`, serta menjalankan server Uvicorn secara otomatis melalui perintah `CMD` saat kontainer diaktifkan. 
 
-## 1. Stage 1: Build Environment (server_builder)
+### 1. Stage 1: Build Environment (server_builder)
 * **Base Image**: Menggunakan `python:3.14.4-slim` sebagai dasar untuk merakit aplikasi dan diberi nama *stage* `server_builder`.
 * **Instalasi Pustaka Sistem**: Mengunduh dan menginstal dependensi tingkat sistem (seperti `build-essential`, `libssl-dev`, `sqlite3`, dll.) yang dibutuhkan untuk kompilasi paket Python.
 * **Menyiapkan Lingkungan Virtual**: Menyalin kode sumber ke folder `/home`, membuat *virtual environment* (`venv`), serta menginstal dependensi Python dari file `requirements.txt`.
 
-## 2. Stage 2: Production Environment (Final Image)
+### 2. Stage 2: Production Environment (Final Image)
 * **Base Image Bersih**: Menggunakan *base image* `python:3.14.4-slim` baru yang terpisah dari *stage* pertama untuk menjaga ukuran citra (*image*) tetap efisien.
 * **Penyalinan Hasil Build**: Hanya menyalin direktori `/home` yang sudah berisi lingkungan virtual dan pustaka siap pakai dari *stage* `server_builder`. Alat-alat kompilasi yang berat tidak ikut tersalin.
 * **Variabel Lingkungan & Port**: Mengatur *environment variable* (`APP_ENV=prod`, `BG_COLOR="#1abc9c"`) serta membuka jalur komunikasi *port* `80` lewat instruksi `EXPOSE 80`.
 * **Perintah Eksekusi**: Menjalankan server ASGI Uvicorn via `CMD` untuk mengaktifkan aplikasi web BlackSheep secara otomatis saat kontainer berjalan.
 
-**env.sh**
+**env.sh**<br>
 <img src="img/03-env-sh-config.png" width="700"><br>
 
 
