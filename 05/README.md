@@ -180,7 +180,8 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat. Ketik
 2. **Layanan `nginx`**: Menjalankan kontainer Nginx sebagai *reverse proxy* dan memetakan port `44777` di mesin host ke port `80` pada kontainer.
 3. **`depends_on`**: Memastikan layanan Nginx baru akan berjalan setelah kontainer aplikasi (`app`) siap.
 
-**blacksheep_lb/Dockerfile**
+**blacksheep_lb/Dockerfile**<br>
+
 <img src="img/03-blacksheep-dockerfile.png" width="700"><br>
 
 **Pembahasan:**
