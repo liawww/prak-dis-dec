@@ -135,7 +135,7 @@ Pada shell/terminal tempat server dijalankan, muncul log HTTP request:<br>
 2. **Kesiapan Containerization**: Sampai tahap ini, pembuatan aplikasi web BlackSheep secara lokal telah selesai dan struktur direktori `blacksheep_lb` sudah siap untuk masuk ke proses pembentukan citra Docker (*Docker image*) menggunakan `Dockerfile` bawaan.
 
 
-Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 12]. Ketika diperiksa, di dalam direktori `blacksheep_lb` sudah terdapat file `Dockerfile` bawaan.<br>
+Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat. Ketika diperiksa, di dalam direktori `blacksheep_lb` sudah terdapat file `Dockerfile` bawaan.<br>
 
 <img src="img/02-ls-la-dockerfile.png" width="700"><br>
 
@@ -155,7 +155,7 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 3. **Inisialisasi Berkas Konfigurasi**: Menyiapkan berkas `nginx.conf` serta `Dockerfile` di dalam direktori `nginx` untuk mengatur mekanisme *load balancing* pada arsitektur terdistribusi.
 
 
-*Langkah 2: Membuat Berkas Konfigurasi Nginx*
+**Langkah 2: Membuat Berkas Konfigurasi Nginx**
 <img src="img/03-nginx-conf.png" width="700"><br>
 
 **Pembahasan:**
@@ -164,14 +164,14 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 3. **HTTP Header Forwarding**: Pengaturan `proxy_set_header` memastikan informasi penting klien (seperti *Host*, *IP Real*, dan *Forwarded Header*) tetap diteruskan dari Nginx ke aplikasi BlackSheep di dalam kontainer.
 
 
-*Langkah 3: Membuat Dockerfile untuk Nginx (nginx/Dockerfile)*
+**Langkah 3: Membuat Dockerfile untuk Nginx (nginx/Dockerfile)**
 <img src="img/03-nginx-dockerfile.png" width="700"><br>
 
 **Pembahasan:**
 1. **Pembuatan `nginx/Dockerfile`**: Berkas ini dibuat di dalam direktori `nginx` untuk menyiapkan kontainer *reverse proxy* menggunakan *base image* ringan berbasis Alpine (`nginx:alpine`).
 2. **Perintah `COPY`**: Baris perintah `COPY nginx.conf /etc/nginx/nginx.conf` berfungsi untuk menyalin konfigurasi load balancer kustom ke dalam direktori konfigurasi bawaan Nginx di dalam kontainer.
 
-*Langkah 4: Membuat File docker-compose.yml di Root Workspace*
+**Langkah 4: Membuat File docker-compose.yml di Root Workspace**
 <img src="img/03-docker-compose-yml.png" width="700"><br>
 
 **Pembahasan:**
@@ -180,7 +180,6 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 3. **`depends_on`**: Memastikan layanan Nginx baru akan berjalan setelah kontainer aplikasi (`app`) siap.
 
 *blacksheep_lb/Dockerfile*
-03-blacksheep-dockerfile
 <img src="img/03-blacksheep-dockerfile.png" width="700"><br>
 
 **Pembahasan:**
@@ -199,7 +198,7 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 * **Variabel Lingkungan & Port**: Mengatur *environment variable* (`APP_ENV=prod`, `BG_COLOR="#1abc9c"`) serta membuka jalur komunikasi *port* `80` lewat instruksi `EXPOSE 80`.
 * **Perintah Eksekusi**: Menjalankan server ASGI Uvicorn via `CMD` untuk mengaktifkan aplikasi web BlackSheep secara otomatis saat kontainer berjalan.
 
-**env.sh**
+**env.sh**<br>
 <img src="img/03-env-sh-config.png" width="700"><br>
 
 
