@@ -142,23 +142,73 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 **Pembahasan:**
 1. **Perintah `ls -la`**: Digunakan untuk menampilkan seluruh daftar berkas dan direktori (termasuk berkas tersembunyi) secara detail di dalam folder project `blacksheep_lb`.
 2. **Keberadaan `Dockerfile`**: Template BlackSheep secara otomatis menyediakan berkas `Dockerfile` dan `.dockerignore` untuk keperluan kontainerisasi aplikasi.
-3. **Catatan Port**: Secara default, `Dockerfile` bawaan BlackSheep membuka **port 80**, bukan port `44777` seperti pada saat pengembangan lokal[cite: 12]. Hal ini penting untuk diperhatikan dan disesuaikan nantinya saat menggunakan Docker Compose.
+3. **Catatan Port**: Secara default, `Dockerfile` bawaan BlackSheep membuka **port 80**, bukan port `44777` seperti pada saat pengembangan lokal. Hal ini penting untuk diperhatikan dan disesuaikan nantinya saat menggunakan Docker Compose.
 
-### 3.3 Struktur Direktori
-```
-.
-├── blacksheep_lb/        # aplikasi (punya Dockerfile sendiri)
-├── nginx/
-│   ├── Dockerfile
-│   └── nginx.conf
-├── docker-compose.yml
-└── env.sh                # alias (opsional, Linux Bash)
-```
+### 3.3 	Siapkan Dockerfile dan docker-compose.yml 
+*Langkah 1: Membuat Struktur Folder Nginx & Docker-compose*
+
+<img src="img/03-buat-folder-nginx.png" width="700"><br>
+
+**Pembahasan:**
+1. **Navigasi Direktori (`cd ~/workspace-05`)**: Berpindah ke direktori kerja utama workspace agar seluruh pengelolaan kontainer dan layanan proxy terpusat dengan rapi.
+2. **Pembuatan Direktori Nginx (`mkdir -p nginx`)**: Membuat folder khusus `nginx` yang akan menampung file konfigurasi proxy dan Dockerfile tersendiri.
+3. **Inisialisasi Berkas Konfigurasi**: Menyiapkan berkas `nginx.conf` serta `Dockerfile` di dalam direktori `nginx` untuk mengatur mekanisme *load balancing* pada arsitektur terdistribusi.
+
+
+*Langkah 2: Membuat Berkas Konfigurasi Nginx*
+<img src="img/03-nginx-conf.png" width="700"><br>
+
+**Pembahasan:**
+1. **Upstream Cluster**: Blok `upstream blacksheep_cluster` digunakan untuk mendefinisikan grup server aplikasi (`server app:80`) yang akan menerima pendistribusian beban kerja (*load balancing*).
+2. **Reverse Proxy Configuration**: Blok `server` pada port 80 berfungsi mendengarkan permintaan masuk (*incoming requests*) lalu meneruskannya via `proxy_pass` ke kelompok server `blacksheep_cluster`.
+3. **HTTP Header Forwarding**: Pengaturan `proxy_set_header` memastikan informasi penting klien (seperti *Host*, *IP Real*, dan *Forwarded Header*) tetap diteruskan dari Nginx ke aplikasi BlackSheep di dalam kontainer.
+
+
+*Langkah 3: Membuat Dockerfile untuk Nginx (nginx/Dockerfile)*
+<img src="img/03-nginx-dockerfile.png" width="700"><br>
+
+**Pembahasan:**
+1. **Pembuatan `nginx/Dockerfile`**: Berkas ini dibuat di dalam direktori `nginx` untuk menyiapkan kontainer *reverse proxy* menggunakan *base image* ringan berbasis Alpine (`nginx:alpine`).
+2. **Perintah `COPY`**: Baris perintah `COPY nginx.conf /etc/nginx/nginx.conf` berfungsi untuk menyalin konfigurasi load balancer kustom ke dalam direktori konfigurasi bawaan Nginx di dalam kontainer.
+
+*Langkah 4: Membuat File docker-compose.yml di Root Workspace*
+<img src="img/03-docker-compose-yml.png" width="700"><br>
+
+**Pembahasan:**
+1. **Layanan `app`**: Menjalankan kontainer aplikasi BlackSheep dengan mengompilasi kode dari direktori `./blacksheep_lb`.
+2. **Layanan `nginx`**: Menjalankan kontainer Nginx sebagai *reverse proxy* dan memetakan port `44777` di mesin host ke port `80` pada kontainer.
+3. **`depends_on`**: Memastikan layanan Nginx baru akan berjalan setelah kontainer aplikasi (`app`) siap.
+
+*blacksheep_lb/Dockerfile*
+03-blacksheep-dockerfile
+<img src="img/03-blacksheep-dockerfile.png" width="700"><br>
+
+**Pembahasan:**
+1. **Perintah `cat Dockerfile`**: Digunakan untuk menampilkan keseluruhan isi teks dari berkas `Dockerfile` di dalam direktori `blacksheep_lb` secara langsung pada terminal.
+2. **Multi-Stage Build**: Konfigurasi kontainer dibagi menjadi dua tahap (menggunakan `AS server_builder` dan base image slim) untuk memastikan dependensi instalasi yang besar terpisah dari lingkungan runtime utama, sehingga ukuran image akhir lebih efisien.
+3. **Eksekusi Aplikasi**: Mengatur lingkungan virtual Python, membuka port `80`, serta menjalankan server Uvicorn secara otomatis melalui perintah `CMD` saat kontainer diaktifkan. 
+
+## 1. Stage 1: Build Environment (server_builder)
+* **Base Image**: Menggunakan `python:3.14.4-slim` sebagai dasar untuk merakit aplikasi dan diberi nama *stage* `server_builder`.
+* **Instalasi Pustaka Sistem**: Mengunduh dan menginstal dependensi tingkat sistem (seperti `build-essential`, `libssl-dev`, `sqlite3`, dll.) yang dibutuhkan untuk kompilasi paket Python.
+* **Menyiapkan Lingkungan Virtual**: Menyalin kode sumber ke folder `/home`, membuat *virtual environment* (`venv`), serta menginstal dependensi Python dari file `requirements.txt`.
+
+## 2. Stage 2: Production Environment (Final Image)
+* **Base Image Bersih**: Menggunakan *base image* `python:3.14.4-slim` baru yang terpisah dari *stage* pertama untuk menjaga ukuran citra (*image*) tetap efisien.
+* **Penyalinan Hasil Build**: Hanya menyalin direktori `/home` yang sudah berisi lingkungan virtual dan pustaka siap pakai dari *stage* `server_builder`. Alat-alat kompilasi yang berat tidak ikut tersalin.
+* **Variabel Lingkungan & Port**: Mengatur *environment variable* (`APP_ENV=prod`, `BG_COLOR="#1abc9c"`) serta membuka jalur komunikasi *port* `80` lewat instruksi `EXPOSE 80`.
+* **Perintah Eksekusi**: Menjalankan server ASGI Uvicorn via `CMD` untuk mengaktifkan aplikasi web BlackSheep secara otomatis saat kontainer berjalan.
+
+**env.sh**
+<img src="img/03-env-sh-config.png" width="700"><br>
+
+
 
 ### 3.4 Konfigurasi nginx
 
 `nginx/Dockerfile`
-```dockerfile
+```
+dockerfile
 FROM nginx
 
 # Override the default nginx configuration file
