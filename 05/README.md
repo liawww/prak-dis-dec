@@ -3,9 +3,9 @@
 
 ## Modul 5 — Fault Tolerance: Load Balancing Aplikasi dan Failure Detection
 ---
-Nama = Laesah Afenlia 
-NIM = 255410019 
-Kelas = IF 1 
+Nama = Laesah Afenlia<br>
+NIM = 255410019 <br>
+Kelas = IF 1 <br>
 ---
 
 ## 1. Tujuan Praktikum
@@ -170,7 +170,21 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 1. **Pembuatan `nginx/Dockerfile`**: Berkas ini dibuat di dalam direktori `nginx` untuk menyiapkan kontainer *reverse proxy* menggunakan *base image* ringan berbasis Alpine (`nginx:alpine`).
 2. **Perintah `COPY`**: Baris perintah `COPY nginx.conf /etc/nginx/nginx.conf` berfungsi untuk menyalin konfigurasi load balancer kustom ke dalam direktori konfigurasi bawaan Nginx di dalam kontainer.
 
-*Langkah 4: Membuat File docker-compose.yml di Root Workspace*
+**Langkah 4: Membuat File docker-compose.yml di Root Workspace**
+```yaml
+services:
+  # aplikasi yang akan di-scale, ada pada direktori blacksheep_lb
+  bs_app:
+    build: ./blacksheep_lb
+  # nginx dibangun dari nginx/Dockerfile
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - bs_app
+```
 <img src="img/03-docker-compose-yml.png" width="700"><br>
 
 **Pembahasan:**
@@ -178,8 +192,9 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 2. **Layanan `nginx`**: Menjalankan kontainer Nginx sebagai *reverse proxy* dan memetakan port `44777` di mesin host ke port `80` pada kontainer.
 3. **`depends_on`**: Memastikan layanan Nginx baru akan berjalan setelah kontainer aplikasi (`app`) siap.
 
-*blacksheep_lb/Dockerfile*
-03-blacksheep-dockerfile
+### blacksheep_lb/Dockerfile
+
+
 <img src="img/03-blacksheep-dockerfile.png" width="700"><br>
 
 **Pembahasan:**
@@ -199,69 +214,19 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 * **Perintah Eksekusi**: Menjalankan server ASGI Uvicorn via `CMD` untuk mengaktifkan aplikasi web BlackSheep secara otomatis saat kontainer berjalan.
 
 **env.sh**<br>
-
-<img src="img/03-env-sh-config.png" width="700"><br>
-
-
-
-### 3.4 Konfigurasi nginx
-
-`nginx/Dockerfile`
-```
-dockerfile
-FROM nginx
-
-# Override the default nginx configuration file
-RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx.conf /etc/nginx/nginx.conf
-```
-
-`nginx/nginx.conf`
-```nginx
-events {
-  worker_connections 4096;
-}
-
-http {
-  # Definisi grup, lihat di docker-compose.yml
-  upstream backend {
-    server bs_app:80;
-  }
-  server {
-    listen 80;
-    location / {
-      # sesuaikan dengan nama upstream di atas
-      proxy_pass http://backend;
-    }
-  }
-}
-```
-
-### 3.5 docker-compose.yml
-```yaml
-services:
-  # aplikasi yang akan di-scale, ada pada direktori blacksheep_lb
-  bs_app:
-    build: ./blacksheep_lb
-  # nginx dibangun dari nginx/Dockerfile
-  nginx:
-    container_name: nginx
-    build: ./nginx
-    ports:
-      - 80:80
-    depends_on:
-      - bs_app
-```
-
-### 3.6 Alias (env.sh)
 ```bash
 alias dcu="sudo docker-compose up --build -d --scale bs_app=2"
 alias dcd="sudo docker compose down"
 alias dps="docker ps --format '{{.Image}} {{.Names}}'"
 alias dcln="docker logs nginx"
 ```
+<img src="img/03-env-sh-config.png" width="700"><br>
 
-### 3.7 Menjalankan Sistem
+**Pembahasan:**
+1. **Penyuntingan Berkas `env.sh`**: Gambar di atas menunjukkan proses konfigurasi alias perintah menggunakan teks editor Nano di terminal WSL.
+2. **Definisi Shortcut Alias**: Berkas ini memuat pintasan perintah seperti `dcu` untuk membangun dan menjalankan kontainer, `dcd` untuk menghentikannya, serta `dps` dan `dcln` untuk memantau status serta log kontainer secara cepat tanpa harus mengetik perintah Docker yang panjang.
+
+###  Menjalankan Sistem
 ```bash
 $ sudo dinitctl start dockerd     # Systemd: sudo systemctl start docker
 $ source env.sh
@@ -272,78 +237,72 @@ $ sudo docker logs load-balancing-bs_app-2
 $ dcd                             # matikan semua container
 ```
 
-### 3.8 Pengujian Failure Detection
-```bash
-# Heartbeat
-$ python check-server.py localhost 44777
-$ python check-server.py localhost 80
+Sebelum menjalankan Docker, jalankan dulu service dockerd. Pada sistem yang menggunakan dinit:<br>  
+<img src="img/03-workspace-05-app-1.png" width="700"><br>
 
-# Retry (tenacity)
-$ python check-retry.py
+**Pembahasan:**
+1. **Server Status**: Berdasarkan log di atas, server Uvicorn berhasil diinisialisasi dan siap menerima koneksi pada port `80`.
+2. **HTTP Traffic**: Terlihat beberapa log akses `GET` dengan kode status `200 OK`, menandakan kontainer berhasil merespon lalu lintas data dan memuat aset (CSS, JS, media) tanpa kendala.
 
-# Circuit breaker
-$ python check-circuit-breaker.py
-```
-Masing-masing script dijalankan pada dua kondisi: aplikasi BlackSheep **aktif** dan **non-aktif** di port 44777.
+**Jika sudah selesai, matikan semua container:** 
 
----
+### Verifikasi Log Load Balancing (2 Replika Application)
 
-## 4. Hasil dan Pembahasan
+Setelah dilakukan *scaling* kontainer aplikasi menjadi 2 replika (`app=2`), pengujian log dilakukan pada masing-masing kontainer untuk memverifikasi pendistribusian akses (*routing*) dari Nginx.
 
-### 4.1 Load Balancing
+<img src="img/03-docker-down.png" width="700"><br>
+
+**Pembahasan:**
+1. **Inisialisasi Replika**: Kedua kontainer aplikasi (`workspace-05-app-1` dan `workspace-05-app-2`) berhasil diinisialisasi dan berjalan pada port internal 80.
+2. **Analisis Load Balancing**: Berdasarkan pemantauan log setelah dilakukan permintaan HTTP, Nginx berhasil membagi lalu lintas (*routing request*) secara bergantian ke `app-1` dan `app-2`. Hal ini membuktikan bahwa konfigurasi *load balancing* Nginx berjalan sesuai skenario.
+
+
+
+### Failure Detection
+
+### Load Balancing
 Setelah `dcu`, Docker membangun image `bs_app` dan `nginx`, lalu menjalankan 3 container. Perintah `dps` menampilkan:
 
-```
-load-balancing-nginx nginx
-load-balancing-bs_app load-balancing-bs_app-1
-load-balancing-bs_app load-balancing-bs_app-2
-```
+<img src="img/04-Started-server-process-[5131].png" width="700"><br>
 
 Awalan `load-balancing` berasal dari nama direktori proyek. Aplikasi dapat diakses melalui `http://localhost` (port 80), bukan lagi port 44777, karena klien sekarang berkomunikasi dengan nginx.
 
 Pada log kedua instance terlihat permintaan `GET /` beserta aset statis (CSS, JS, gambar) tercatat di instance yang berbeda. Instance `bs_app-1` menerima 2 akses `GET /` terakhir dan `bs_app-2` menerima 1 akses. Hal ini membuktikan permintaan dari klien diteruskan nginx ke instance yang tersedia, sehingga beban terdistribusi. Jika salah satu instance mati, instance lainnya masih dapat melayani permintaan sehingga *availability* aplikasi meningkat.
 
-### 4.2 Heartbeat (`check-server.py`)
+### Heartbeat (`check-server.py`)
 
-| Kondisi | Perintah | Hasil |
-|---|---|---|
-| BlackSheep aktif di 44777 | `python check-server.py localhost 44777` | `Server up` |
-| Tidak ada server di port 80 | `python check-server.py localhost 80` | `Server down` |
+<img src="img/04-check-server.png" width="700"><br>
+
+BlackSheep aktif di 44777  `python check-server.py localhost 44777`  `Server up` 
+Tidak ada server di port 80  `python check-server.py localhost 80`  `Server down`
 
 Script mencoba terhubung ke host dan port yang diberikan. Jika koneksi berhasil, komponen dianggap hidup (*up*); jika koneksi gagal atau ditolak, komponen dianggap gagal (*down*). Inilah prinsip dasar *failure detection*: respons dari komponen menjadi tanda ia masih aktif, sedangkan ketiadaan respons dianggap sebagai kegagalan.
 
-### 4.3 Retry dengan Tenacity (`check-retry.py`)
+### Retry dengan Tenacity (`check-retry.py`)
 
-| Kondisi | Hasil |
-|---|---|
-| BlackSheep aktif | `Attempting to access http://localhost:44777...` lalu `Successfully accessed http://localhost:44777` (berhasil pada percobaan pertama) |
-| BlackSheep non-aktif | Pesan `Attempting to access ...` muncul **5 kali**, lalu `Failed to access URL after multiple retries: RetryError[... raised ConnectionError]` |
+<img src="img/04-Started-server-process-[5131].png" width="700"><br>
+<img src="img/04-check-retry01.png" width="700"><br>
+<img src="img/04-check-retry02.png" width="700"><br>
 
-Saat server aktif, tidak diperlukan pengulangan. Saat server mati, `tenacity` mengulang percobaan beberapa kali. Setelah seluruh percobaan habis, *exception* `RetryError` dilempar dengan penyebab `ConnectionError`. Pola ini berguna untuk kegagalan sementara (misalnya server baru restart), tetapi untuk layanan yang benar-benar mati, pengulangan terus-menerus membuang waktu dan sumber daya.
 
-### 4.4 Circuit Breaker (`check-circuit-breaker.py`)
 
-| Kondisi | Hasil |
-|---|---|
-| BlackSheep aktif | `Attempting to access http://localhost:44777...` lalu `Successfully accessed http://localhost:44777` |
-| BlackSheep non-aktif | `HTTPConnectionPool(host='localhost', port=44777): Max retries exceeded ... [Errno 111] Connection refused` |
+*Failure Detection* (Deteksi Kegagalan): Menguji bagaimana sebuah sistem atau skrip pengawas (heartbeat) dapat mendeteksi apakah sebuah server/layanan sedang aktif (Server up) atau mati (Server down) di port tertentu.   
+*Retry Mechanism* (Mekanisme Percobaan Ulang): Menguji ketahanan komunikasi jaringan, di mana jika suatu saat server gagal diakses, klien atau sistem tidak langsung menyerah, melainkan melakukan percobaan ulang secara otomatis (retry attempts) beberapa kali sebelum akhirnya menyatakan koneksi gagal total.
 
-Cara kerja secara konsep: selama layanan sehat, circuit breaker berada pada status *closed* dan permintaan diteruskan. Kegagalan dihitung, dan ketika melewati ambang batas, sirkuit berpindah ke status *open* sehingga permintaan berikutnya langsung ditolak tanpa mencoba menghubungi layanan yang gagal. Setelah jeda waktu, sirkuit masuk status *half-open* untuk menguji pemulihan. Jika uji berhasil maka kembali *closed*, jika gagal kembali *open*.
+### Circuit Breaker (`check-circuit-breaker.py`)
 
-> Catatan: detail implementasi (library yang dipakai, nilai ambang kegagalan, dan lama *recovery timeout*) mengikuti isi file `check-circuit-breaker.py` pada modul praktikum. Sesuaikan bagian ini dengan kode yang kamu jalankan.
+<img src="img/04-Started-server-process-[5131].png" width="700"><br>
 
-### 4.5 Perbandingan Retry vs Circuit Breaker
+*Failure Detection* (Deteksi Kegagalan): Menguji bagaimana sebuah sistem atau skrip pengawas (heartbeat) dapat mendeteksi apakah sebuah server/layanan sedang aktif (Server up) atau mati (Server down) di port tertentu.   
+*Retry Mechanism* (Mekanisme Percobaan Ulang): Menguji ketahanan komunikasi jaringan, di mana jika suatu saat server gagal diakses, klien atau sistem tidak langsung menyerah, melainkan melakukan percobaan ulang secara otomatis (retry attempts) beberapa kali sebelum akhirnya menyatakan koneksi gagal total.
 
-| Aspek | Retry | Circuit Breaker |
-|---|---|---|
-| Tujuan | Mengatasi kegagalan sementara | Mencegah kegagalan berantai dan melindungi layanan |
-| Perilaku saat gagal | Mengulang percobaan beberapa kali | Memblokir panggilan sementara |
-| Risiko | Membebani layanan yang sedang bermasalah | Permintaan ditolak walau layanan mungkin sudah pulih (sebelum half-open) |
-| Penggunaan ideal | Gangguan singkat | Layanan gagal berkepanjangan |
 
-Keduanya saling melengkapi dan sering dipakai bersamaan.
 
----
+### Perbandingan Retry vs Circuit Breaker
+
+<img src="img/04-check-circuit-breaker.png" width="700"><br>
+**Pembahasan**
+check-circuit-breaker.py: Skrip ini bertindak sebagai penguji koneksi (circuit breaker sederhana) ke endpoint server tertentu pada port 44778. Ketika server aktif, skrip berhasil menerima status HTTP 200 (Successfully accessed). Sebaliknya, ketika server dimatikan, skrip mendeteksi kegagalan koneksi secara langsung dan menampilkan pesan penolakan koneksi (Connection refused) tanpa membuat aplikasi utama mengalami crash.
 
 ## 5. Kesimpulan
 
