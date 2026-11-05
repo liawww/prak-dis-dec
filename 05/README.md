@@ -71,7 +71,7 @@ uv pip install blacksheep blacksheep-cli
 **uv pip install blacksheep-cli**<br>
 <img src="img/01-install-blacksheep-CLI.png" width="700"><br>
 
-**Pembahasan: 
+**Pembahasan:**
 1. **`mkdir workspace-05 && cd workspace-05`**: Membuat direktori kerja baru bernama `workspace-05` dan langsung berpindah ke dalam direktori tersebut.
 2. **`uv venv`**: Membuat lingkungan virtual (*virtual environment*) Python terisolasi di dalam direktori `.venv` menggunakan tool `uv`.
 3. **`source .venv/bin/activate`**: Mengaktifkan virtual environment yang telah dibuat, ditandai dengan munculnya nama environment `(workspace-05)` pada prompt terminal.
@@ -104,6 +104,7 @@ Pada tahap ini, dibuat kerangka aplikasi web berbasis ASGI menggunakan perkakas 
 <img src="img/02-running-dev.png" width="700"><br>
 
 **Pembahasan:**
+
 1. **`python dev.py`**: Perintah ini dijalankan di dalam folder project `blacksheep_lb` untuk menyalakan server lokal pengembang berbasis kerangka kerja ASGI Uvicorn.
 2. **Log Berhasil (`Uvicorn running on http://localhost:44777`)**: Menandakan bahwa proses inisialisasi aplikasi web BlackSheep telah sukses, server siap berjalan, dan dapat diakses melalui browser pada port `44777`.
 
@@ -111,8 +112,7 @@ Pada tahap ini, dibuat kerangka aplikasi web berbasis ASGI menggunakan perkakas 
 Pastikan bahwa aplikasi tersebut bisa berjalan dengan baik:<br>
 <img src="img/02-menjalankan-server.png" width="700"><br>
 
-**pembahasan:**
-
+**Pembahasan:**
 1. **`python dev.py`**: Perintah ini dijalankan di dalam direktori `blacksheep_lb` untuk menyalakan server lokal pengembang (*development server*) berbasis ASGI Uvicorn.
 2. **Log Uvicorn**: Pesan `Uvicorn running on http://localhost:44777` menunjukkan bahwa aplikasi telah berhasil dijalankan dan siap diuji coba melalui browser.
 3. **`^C` (Shutting Down)**: Menandakan proses server dihentikan sementara dengan menekan kombinasi tombol `Ctrl + C` pada terminal setelah pengujian selesai.
@@ -121,7 +121,8 @@ Akses ke http://localhost:44777 menggunakan browser:<br>
 
 <img src="img/02-web-browser.png" width="700"><br>
 
-**pembahasan:**
+**Pembahasan:**
+
 **Akses Web Browser**: Saat alamat `http://localhost:44777` dibuka melalui web browser, aplikasi berhasil merender halaman utama berlatar hijau yang menandakan kerangka web framework ASGI BlackSheep berjalan dengan normal dan siap digunakan.
 
 Pada shell tempat kita mengaktifkan server, muncul:
@@ -134,7 +135,7 @@ Pada shell/terminal tempat server dijalankan, muncul log HTTP request:<br>
 2. **Kesiapan Containerization**: Sampai tahap ini, pembuatan aplikasi web BlackSheep secara lokal telah selesai dan struktur direktori `blacksheep_lb` sudah siap untuk masuk ke proses pembentukan citra Docker (*Docker image*) menggunakan `Dockerfile` bawaan.
 
 
-Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 12]. Ketika diperiksa, di dalam direktori `blacksheep_lb` sudah terdapat file `Dockerfile` bawaan.<br>
+Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat. Ketika diperiksa, di dalam direktori `blacksheep_lb` sudah terdapat file `Dockerfile` bawaan.<br>
 
 <img src="img/02-ls-la-dockerfile.png" width="700"><br>
 
@@ -154,7 +155,7 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 3. **Inisialisasi Berkas Konfigurasi**: Menyiapkan berkas `nginx.conf` serta `Dockerfile` di dalam direktori `nginx` untuk mengatur mekanisme *load balancing* pada arsitektur terdistribusi.
 
 
-*Langkah 2: Membuat Berkas Konfigurasi Nginx*
+**Langkah 2: Membuat Berkas Konfigurasi Nginx**
 <img src="img/03-nginx-conf.png" width="700"><br>
 
 **Pembahasan:**
@@ -163,7 +164,7 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 3. **HTTP Header Forwarding**: Pengaturan `proxy_set_header` memastikan informasi penting klien (seperti *Host*, *IP Real*, dan *Forwarded Header*) tetap diteruskan dari Nginx ke aplikasi BlackSheep di dalam kontainer.
 
 
-*Langkah 3: Membuat Dockerfile untuk Nginx (nginx/Dockerfile)*
+**Langkah 3: Membuat Dockerfile untuk Nginx (nginx/Dockerfile)**
 <img src="img/03-nginx-dockerfile.png" width="700"><br>
 
 **Pembahasan:**
@@ -171,6 +172,73 @@ Pada titik ini, aplikasi web menggunakan BlackSheep telah berhasil dibuat[cite: 
 2. **Perintah `COPY`**: Baris perintah `COPY nginx.conf /etc/nginx/nginx.conf` berfungsi untuk menyalin konfigurasi load balancer kustom ke dalam direktori konfigurasi bawaan Nginx di dalam kontainer.
 
 **Langkah 4: Membuat File docker-compose.yml di Root Workspace**
+
+<img src="img/03-docker-compose-yml.png" width="700"><br>
+
+**Pembahasan:**
+1. **Layanan `app`**: Menjalankan kontainer aplikasi BlackSheep dengan mengompilasi kode dari direktori `./blacksheep_lb`.
+2. **Layanan `nginx`**: Menjalankan kontainer Nginx sebagai *reverse proxy* dan memetakan port `44777` di mesin host ke port `80` pada kontainer.
+3. **`depends_on`**: Memastikan layanan Nginx baru akan berjalan setelah kontainer aplikasi (`app`) siap.
+
+**blacksheep_lb/Dockerfile**<br>
+
+<img src="img/03-blacksheep-dockerfile.png" width="700"><br>
+
+**Pembahasan:**
+1. **Perintah `cat Dockerfile`**: Digunakan untuk menampilkan keseluruhan isi teks dari berkas `Dockerfile` di dalam direktori `blacksheep_lb` secara langsung pada terminal.
+2. **Multi-Stage Build**: Konfigurasi kontainer dibagi menjadi dua tahap (menggunakan `AS server_builder` dan base image slim) untuk memastikan dependensi instalasi yang besar terpisah dari lingkungan runtime utama, sehingga ukuran image akhir lebih efisien.
+3. **Eksekusi Aplikasi**: Mengatur lingkungan virtual Python, membuka port `80`, serta menjalankan server Uvicorn secara otomatis melalui perintah `CMD` saat kontainer diaktifkan. 
+
+## 1. Stage 1: Build Environment (server_builder)
+* **Base Image**: Menggunakan `python:3.14.4-slim` sebagai dasar untuk merakit aplikasi dan diberi nama *stage* `server_builder`.
+* **Instalasi Pustaka Sistem**: Mengunduh dan menginstal dependensi tingkat sistem (seperti `build-essential`, `libssl-dev`, `sqlite3`, dll.) yang dibutuhkan untuk kompilasi paket Python.
+* **Menyiapkan Lingkungan Virtual**: Menyalin kode sumber ke folder `/home`, membuat *virtual environment* (`venv`), serta menginstal dependensi Python dari file `requirements.txt`.
+
+## 2. Stage 2: Production Environment (Final Image)
+* **Base Image Bersih**: Menggunakan *base image* `python:3.14.4-slim` baru yang terpisah dari *stage* pertama untuk menjaga ukuran citra (*image*) tetap efisien.
+* **Penyalinan Hasil Build**: Hanya menyalin direktori `/home` yang sudah berisi lingkungan virtual dan pustaka siap pakai dari *stage* `server_builder`. Alat-alat kompilasi yang berat tidak ikut tersalin.
+* **Variabel Lingkungan & Port**: Mengatur *environment variable* (`APP_ENV=prod`, `BG_COLOR="#1abc9c"`) serta membuka jalur komunikasi *port* `80` lewat instruksi `EXPOSE 80`.
+* **Perintah Eksekusi**: Menjalankan server ASGI Uvicorn via `CMD` untuk mengaktifkan aplikasi web BlackSheep secara otomatis saat kontainer berjalan.
+
+**env.sh**<br>
+<img src="img/03-env-sh-config.png" width="700"><br>
+
+
+
+### 3.4 Konfigurasi nginx
+
+`nginx/Dockerfile`
+```
+dockerfile
+FROM nginx
+
+# Override the default nginx configuration file
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf
+```
+
+`nginx/nginx.conf`
+```nginx
+events {
+  worker_connections 4096;
+}
+
+http {
+  # Definisi grup, lihat di docker-compose.yml
+  upstream backend {
+    server bs_app:80;
+  }
+  server {
+    listen 80;
+    location / {
+      # sesuaikan dengan nama upstream di atas
+      proxy_pass http://backend;
+    }
+  }
+}
+```
+
+### 3.5 docker-compose.yml
 ```yaml
 services:
   # aplikasi yang akan di-scale, ada pada direktori blacksheep_lb
@@ -311,5 +379,3 @@ check-circuit-breaker.py: Skrip ini bertindak sebagai penguji koneksi (circuit b
 3. Pola *retry* (`tenacity`) menangani kegagalan sementara dengan mengulang percobaan, dan melaporkan `RetryError` bila semua percobaan gagal.
 4. Pola *circuit breaker* mencegah kegagalan berantai dengan membatasi panggilan ke layanan yang gagal, melalui tiga status *closed*, *open*, dan *half-open*.
 5. Kombinasi *load balancing*, *failure detection*, *retry*, dan *circuit breaker* menjadi fondasi penting untuk membangun sistem terdistribusi yang toleran terhadap kegagalan.
-
----
