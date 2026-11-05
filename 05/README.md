@@ -331,7 +331,7 @@ Setelah dilakukan *scaling* kontainer aplikasi menjadi 2 replika (`app=2`), peng
 ### Load Balancing
 Setelah `dcu`, Docker membangun image `bs_app` dan `nginx`, lalu menjalankan 3 container. Perintah `dps` menampilkan:
 
-<img src="img/04-Started-server-process-[5131].png" width="700"><br>
+<img src="img/04-Started-server-process.png" width="700"><br>
 
 Awalan `load-balancing` berasal dari nama direktori proyek. Aplikasi dapat diakses melalui `http://localhost` (port 80), bukan lagi port 44777, karena klien sekarang berkomunikasi dengan nginx.
 
@@ -348,7 +348,7 @@ Script mencoba terhubung ke host dan port yang diberikan. Jika koneksi berhasil,
 
 ### Retry dengan Tenacity (`check-retry.py`)
 
-<img src="img/04-Started-server-process-[5131].png" width="700"><br>
+<img src="img/04-Started-server-process.png" width="700"><br>
 <img src="img/04-check-retry01.png" width="700"><br>
 <img src="img/04-check-retry02.png" width="700"><br>
 
