@@ -359,7 +359,7 @@ Script mencoba terhubung ke host dan port yang diberikan. Jika koneksi berhasil,
 
 ### Circuit Breaker (`check-circuit-breaker.py`)
 
-<img src="img/04-Started-server-process-[5131].png" width="700"><br>
+<img src="img/04-Started-server-process.png" width="700"><br>
 
 *Failure Detection* (Deteksi Kegagalan): Menguji bagaimana sebuah sistem atau skrip pengawas (heartbeat) dapat mendeteksi apakah sebuah server/layanan sedang aktif (Server up) atau mati (Server down) di port tertentu.   
 *Retry Mechanism* (Mekanisme Percobaan Ulang): Menguji ketahanan komunikasi jaringan, di mana jika suatu saat server gagal diakses, klien atau sistem tidak langsung menyerah, melainkan melakukan percobaan ulang secara otomatis (retry attempts) beberapa kali sebelum akhirnya menyatakan koneksi gagal total.
