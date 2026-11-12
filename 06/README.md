@@ -22,9 +22,10 @@ Ambil distribusi Apache Hadoop di <https://hadoop.apache.org/releases.html> (pil
 
 ## 2. Instalasi Apache Hadoop
 
-<img src="img/hadoop-3.5.0.png" width="700"><br
+<img src="img/hadoop-3.5.0.png" width="700"><br>
 
 <img src="img/java -version.png" width="700"><br>
+
 <img src="img/hadoop.png" width="700"><br>
 
 Ekstrak file hasil download (asumsi berada di `~/master/data-engineering/apache-hadoop/hadoop-3.5.0.tar.gz`), lalu buat symlink:
@@ -59,14 +60,14 @@ Jika berhasil, akan tampil usage Hadoop beserta daftar subcommand.
 
 ## 3. Instalasi pdsh
 
-Kebanyakan distro Linux sudah menyediakan paket `pdsh`. Pada Artix Linux, pdsh dikompilasi dari AUR menggunakan `trizen`:
-
-<img src="img/pdsh.png" width="700"><br>
+Paket `pdsh` diinstal menggunakan *package manager* `apt` pada lingkungan WSL (Ubuntu):
 
 ```bash
-trizen -Ss pdsh
-trizen -S pdsh
+sudo apt install pdsh -y
+export PDSH_RCMD_TYPE=ssh
 ```
+
+<img src="img/pdsh.png" width="700"><br>
 
 Untuk distro lain, sesuaikan dengan package manager yang digunakan.
 
@@ -92,84 +93,24 @@ chmod 0600 ~/.ssh/authorized_keys
 
 Uji dengan `ssh localhost` (jawab `yes` saat pertama kali), lalu `logout`. Pada percobaan berikutnya tidak boleh meminta password.
 
+<img src="img/pdsh-test.png" width="700"><br>
+<img src="img/pdsh-keygen.png" width="700"><br>
+
 ## 4. Konfigurasi Apache Hadoop
 
 Semua file berada di `$HADOOP_HOME/etc/hadoop/`.
 
 ### hdfs-site.xml
-
-```xml
-<configuration>
-    <property>
-        <name>dfs.replication</name>
-        <value>1</value>
-    </property>
-</configuration>
-```
+<img src="img/hdfs-site-xml.png" width="700"><br>
 
 ### core-site.xml
-
-Ganti `yourusername` dengan nama user Linux Anda.
-
-```xml
-<configuration>
-    <property>
-        <name>fs.defaultFS</name>
-        <value>hdfs://localhost:9000</value>
-    </property>
-    <property>
-        <name>hadoop.proxyuser.yourusername.groups</name>
-        <value>*</value>
-    </property>
-    <property>
-        <name>hadoop.proxyuser.yourusername.hosts</name>
-        <value>*</value>
-    </property>
-</configuration>
-```
+<img src="img/core-site-xml.png" width="700"><br>
 
 ### mapred-site.xml
-
-```xml
-<configuration>
-    <property>
-        <name>mapreduce.framework.name</name>
-        <value>yarn</value>
-    </property>
-    <property>
-        <name>mapreduce.application.classpath</name>
-        <value>$HADOOP_CLASSPATH:$HADOOP_HOME/share/hadoop/mapreduce/*:$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/lib/*</value>
-    </property>
-</configuration>
-```
+<img src="img/mapred-site-xml.png" width="700"><br>
 
 ### yarn-site.xml
-
-```xml
-<configuration>
-    <!-- Site specific YARN configuration properties -->
-    <property>
-        <name>yarn.nodemanager.aux-services</name>
-        <value>mapreduce_shuffle</value>
-    </property>
-    <property>
-        <name>yarn.nodemanager.env-whitelist</name>
-        <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_HOME,PATH,LANG,TZ,HADOOP_MAPRED_HOME</value>
-    </property>
-    <property>
-        <name>yarn.nodemanager.resource.memory-mb</name>
-        <value>4096</value>
-    </property>
-    <property>
-        <name>yarn.scheduler.minimum-allocation-mb</name>
-        <value>2048</value>
-    </property>
-    <property>
-        <name>yarn.nodemanager.vmem-pmem-ratio</name>
-        <value>2.1</value>
-    </property>
-</configuration>
-```
+<img src="img/yarn-site-xml.png" width="700"><br>
 
 ## 5. Format NameNode
 
@@ -179,40 +120,37 @@ Ganti `yourusername` dengan nama user Linux Anda.
 java -version
 hdfs namenode -format
 ```
+<img src="img/NameNode01.png" width="700"><br>
+<img src="img/NameNode02.png" width="700"><br>
 
 ## 6. Atur JAVA_HOME
 
 Edit `$HADOOP_HOME/etc/hadoop/hadoop-env.sh` dan isi `JAVA_HOME` sesuai lokasi JDK di komputer/server/node Anda, contoh:
 
 ```bash
-export JAVA_HOME=/home/bpdp/.sdkman/candidates/java/current
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ```
+<img src="img/JAVA_HOME.png" width="700"><br>
 
 ## 7. Jalankan Daemon HDFS
 
 ```bash
 start-dfs.sh
 ```
-
-Output yang diharapkan:
-
-```
-Starting namenodes on [localhost]
-Starting datanodes
-Starting secondary namenodes [NEO-X]
-```
+<img src="img/jalankan_daemon_hdfs.png" width="700"><br>
 
 Pemantauan dapat dilakukan melalui web UI NameNode: <http://localhost:9870> (pada modul, tampilan dibuka melalui `http://localhost:9870/dfshealth.html#tab-overview`).
+
+<img src="img/web_hdfs.png" width="700"><br>
 
 ## 8. Selesai
 
 Jika sampai tahap ini berhasil, Hadoop dan HDFS siap digunakan. Contoh operasi file pada HDFS:
 
 ```bash
-hdfs dfs -ls /
-hdfs dfs -mkdir -p /user/bpdp
-hdfs dfs -ls /
-hdfs dfs -ls /user
+   hdfs dfs -mkdir -p /user/afenlia/datasets
+   hdfs dfs -put file1.csv file2.csv file3.csv /user/afenlia/datasets/
+   hdfs dfs -ls /user/afenlia/datasets
 ```
 
 Daftar lengkap perintah HDFS: <https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html>
@@ -223,34 +161,12 @@ Untuk menghentikan HDFS:
 stop-dfs.sh
 ```
 
----
 
 ## Tugas
 
 1. Buat direktori `/user/<nama-user>/datasets` di HDFS Anda.
 2. Cari 3 file `.csv` di Internet, lalu salin ketiganya ke direktori yang baru dibuat pada tugas 1.
 
-### Contoh penyelesaian
 
-```bash
-# 1. Buat direktori datasets di HDFS
-hdfs dfs -mkdir -p /user/$(whoami)/datasets
+<img src="img/tugas_hdfs_datasets.png" width="700"><br>
 
-# 2. Unduh 3 file CSV (ganti URL dengan dataset pilihan Anda)
-wget -O data1.csv "<URL_CSV_1>"
-wget -O data2.csv "<URL_CSV_2>"
-wget -O data3.csv "<URL_CSV_3>"
-
-# 3. Salin ke HDFS
-hdfs dfs -put data1.csv data2.csv data3.csv /user/$(whoami)/datasets/
-
-# 4. Verifikasi
-hdfs dfs -ls /user/$(whoami)/datasets
-```
-
----
-
-## Catatan
-
-- Port web UI NameNode pada Hadoop 3.x secara default adalah **9870**. Pada tangkapan layar modul terlihat `localhost:9870`; jika halaman tidak terbuka, cek port melalui konfigurasi `dfs.namenode.http-address`.
-- Pastikan `sshd` aktif sebelum menjalankan `start-dfs.sh`, dan `JAVA_HOME` sudah diatur di `hadoop-env.sh`.
