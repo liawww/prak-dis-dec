@@ -93,7 +93,8 @@ chmod 0600 ~/.ssh/authorized_keys
 
 Uji dengan `ssh localhost` (jawab `yes` saat pertama kali), lalu `logout`. Pada percobaan berikutnya tidak boleh meminta password.
 
-<img src="img/pdsh-test.png" width="700"><br>
+<img src="img/pdsh-test..png" width="700"><br>
+
 <img src="img/pdsh-keygen.png" width="700"><br>
 
 ## 4. Konfigurasi Apache Hadoop
