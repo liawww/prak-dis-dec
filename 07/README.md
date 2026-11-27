@@ -1,8 +1,8 @@
 # Modul 7 - Cloud Computing
 ---
-Nama    : Laesah Afenlia
-Nim     : 255410019 
-Prodi   : IF 1
+Nama    : Laesah Afenlia <br
+Nim     : 255410019 <br>
+Prodi   : IF 1 <br>
 
 ---
 
