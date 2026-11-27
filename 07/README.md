@@ -179,8 +179,10 @@ Pada posisi ini, CA telah berhasil dijalankan.
 Jika menggunakan Podman, maka dockerd tidak perlu diaktifkan. Jika dockerd aktif, matikan service-nya.
 
 Pada sistem berbasis dinit:
+
 ```bash
 sudo dinitctl stop dockerd
+```
 
 Podman tetap bisa memanfaatkan file Dockerfile sehingga kita tetap menggunakan Dockerfile yang telah dibuat. Buat image dengan perintah berikut (perhatikan ada titik di belakang, artinya current directory):
 
