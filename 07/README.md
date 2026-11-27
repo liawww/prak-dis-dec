@@ -190,6 +190,7 @@ Podman tetap bisa memanfaatkan file Dockerfile sehingga kita tetap menggunakan D
 <img src="img/langkah-4b-podman-build-selesai.png" width="700"><br>
 
 Cek image yang telah berhasil dibuat:
+
 <img src="img/langkah-4c-podman-image-ls.png" width="700"><br>
 
 
@@ -198,3 +199,4 @@ Jalankan dengan memetakan port 5000 pada aplikasi di container ke port 5001 di l
 Akses melalui web browser di http://127.0.0.1:5001. Pada posisi ini, CA telah berhasil dijalankan menggunakan Podman.
 <img src="img/langkah-4e-browserPodman.png" width="700"><br>
 
+---
