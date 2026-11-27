@@ -189,7 +189,7 @@ Podman tetap bisa memanfaatkan file Dockerfile sehingga kita tetap menggunakan D
 <img src="img/langkah-4a-podman-build-proses.png" width="700"><br>
 <img src="img/langkah-4b-podman-build-selesai.png" width="700"><br>
 
-Cek image yang telah berhasil dibuat:
+Cek image yang telah berhasil dibuat:<br>
 
 <img src="img/langkah-4c-podman-image-ls.png" width="700"><br>
 
